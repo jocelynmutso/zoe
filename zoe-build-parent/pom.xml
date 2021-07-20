@@ -17,11 +17,6 @@
 		<maven.compiler.source>${jdk.version}</maven.compiler.source>
 		<maven.build.timestamp.format>yyyy-MM-dd</maven.build.timestamp.format>
 
-		<spring.security.version>5.5.1</spring.security.version>
-		<spring.boot.version>2.5.0</spring.boot.version>
-		<spring.version>5.3.8</spring.version>
-		<hbvalidator.version>6.0.21.Final</hbvalidator.version>
-
 		<logback.version>1.2.3</logback.version>
 		<slf4j.version>1.7.24</slf4j.version>
 		<jackson.version>2.10.5.1</jackson.version>
@@ -29,10 +24,6 @@
 		<immutables.version>2.8.2</immutables.version>
 		<findbugs.version>3.0.2</findbugs.version>
 		<guava.version>30.0-jre</guava.version>
-		<groovy.version>2.4.20</groovy.version>
-		<freemarker.version>2.3.30</freemarker.version>
-		<gitplugin.version>2.2.4</gitplugin.version>
-		<jgit.version>5.9.0.202009080501-r</jgit.version>
 
 		<junit.version>4.12</junit.version>
 		<jsonassert.version>1.5.0</jsonassert.version>
@@ -94,33 +85,6 @@
 		<pluginManagement>
 			<plugins>
 				<plugin>
-					<groupId>pl.project13.maven</groupId>
-					<artifactId>git-commit-id-plugin</artifactId>
-					<version>${gitplugin.version}</version>
-					<executions>
-						<execution>
-							<id>get-the-git-infos</id>
-							<goals>
-								<goal>revision</goal>
-							</goals>
-						</execution>
-					</executions>
-					<configuration>
-						<dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
-						<prefix>git</prefix>
-						<verbose>false</verbose>
-						<generateGitPropertiesFile>true</generateGitPropertiesFile>
-						<generateGitPropertiesFilename>${project.build.outputDirectory}/buildinfo.git.properties</generateGitPropertiesFilename>
-						<format>json</format>
-						<gitDescribe>
-							<skip>false</skip>
-							<always>true</always>
-							<dirty>-dirty</dirty>
-						</gitDescribe>
-					</configuration>
-				</plugin>
-
-				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>3.8.1</version>
@@ -164,8 +128,8 @@
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>io.resys.hdes</groupId>
-				<artifactId>hdes-bom</artifactId>
+				<groupId>io.github.jocelynmutso</groupId>
+				<artifactId>zoe-bom</artifactId>
 				<version>${project.version}</version>
 				<type>pom</type>
 				<scope>import</scope>
@@ -182,16 +146,6 @@
 				<version>${guava.version}</version>
 			</dependency>
 			<dependency>
-				<groupId>org.freemarker</groupId>
-				<artifactId>freemarker</artifactId>
-				<version>${freemarker.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.codehaus.groovy</groupId>
-				<artifactId>groovy-all</artifactId>
-				<version>${groovy.version}</version>
-			</dependency>
-			<dependency>
 				<groupId>ch.qos.logback</groupId>
 				<artifactId>logback-classic</artifactId>
 				<version>${logback.version}</version>
@@ -201,11 +155,6 @@
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
 				<version>${slf4j.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.hibernate</groupId>
-				<artifactId>hibernate-validator</artifactId>
-				<version>${hbvalidator.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.immutables</groupId>
@@ -241,18 +190,6 @@
 				<version>${jackson.format.version}</version>
 			</dependency>
 
-			<!-- JGIT -->
-			<dependency>
-				<groupId>org.eclipse.jgit</groupId>
-				<artifactId>org.eclipse.jgit</artifactId>
-				<version>${jgit.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.eclipse.jgit</groupId>
-				<artifactId>org.eclipse.jgit.ssh.jsch</artifactId>
-				<version>${jgit.version}</version>
-			</dependency>
-
 			<!-- Commons -->
 			<dependency>
 				<groupId>commons-io</groupId>
@@ -280,57 +217,7 @@
 				<version>${commons-collections.version}</version>
 			</dependency>
 
-			<!-- spring -->
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-expression</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-webmvc</artifactId>
-				<version>${spring.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot</artifactId>
-				<version>${spring.boot.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-autoconfigure</artifactId>
-				<version>${spring.boot.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-starter-web</artifactId>
-				<version>${spring.boot.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-starter-thymeleaf</artifactId>
-				<version>${spring.boot.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework.security</groupId>
-				<artifactId>spring-security-oauth2-client</artifactId>
-				<version>${spring.security.version}</version>
-			</dependency>
-
-
 			<!-- Test dependencies -->
-			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-test</artifactId>
-				<version>${spring.boot.version}</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.springframework</groupId>
-				<artifactId>spring-test</artifactId>
-				<version>${spring.version}</version>
-				<scope>test</scope>
-			</dependency>
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
