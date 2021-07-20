@@ -18,9 +18,9 @@ sdk install maven
 ## Creating and Running Maven Project
 ```
 mvn archetype:generate                                  \
-  -DarchetypeGroupId=io.resys.hdes                      \
-  -DarchetypeArtifactId=hdes-maven-archetype            \
-  -DgroupId=io.resys.test                               \
+  -DarchetypeGroupId=io.github.jocelynmutso             \
+  -DarchetypeArtifactId=zoe-maven-archetype             \
+ // -DgroupId=io.placeholder.test                       \
   -DartifactId=test-project
 
 cd test-project
