@@ -8,6 +8,10 @@ quarkus:
       io.resys:
         level: DEBUG
 
+
+  zoe-ide:
+    server-path: not-ready
+
 "%prod":
   quarkus:
 
