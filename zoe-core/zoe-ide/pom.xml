@@ -4,9 +4,8 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>io.github.jocelynmutso</groupId>
-    <artifactId>zoe-build-parent</artifactId>
+    <artifactId>zoe-core</artifactId>
     <version>999-SNAPSHOT</version>
-    <relativePath>../zoe-build-parent/pom.xml</relativePath>
   </parent>
   <artifactId>zoe-ide</artifactId>
   <build>

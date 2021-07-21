@@ -36,4 +36,5 @@ bin/
 node_modules/
 target/
 /build
-/.settings/
+.classpath
+.settings/

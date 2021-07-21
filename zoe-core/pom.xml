@@ -14,6 +14,7 @@
 
   <modules>
     <module>zoe-ide</module>
+    <module>zoe-ide-services</module>
   </modules>
 
 </project>
