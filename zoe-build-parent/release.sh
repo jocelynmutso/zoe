@@ -11,8 +11,8 @@ if [[ "${last_release_commit_hash}" = "${GITHUB_SHA}" ]]; then
 fi
 
 echo "Import GPG key"
-echo "$GPG_KEY" | base64 -d > private.key
-gpg --batch --import ./private.key 
+echo "$GPG_KEY" > private.key
+gpg --import ./private.key 
 rm ./private.key
 echo "JAVA_HOME '$JAVA_HOME'"
 
