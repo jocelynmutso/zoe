@@ -27,8 +27,8 @@ git fetch --all
 git branch -a --contains ${GITHUB_SHA} --format="%(refname)"
 
 readonly local refname=$(git branch -a --contains ${GITHUB_SHA} --format="%(refname)" | head -1)
-if [[ "${refname}" = "refs/heads/3.y" ]]; then
-     readonly local branch="3.y"
+if [[ "${refname}" = "refs/heads/main" ]]; then
+     readonly local branch="main"
 else
      readonly local branch=${refname#refs/remotes/origin/}
 fi
@@ -41,7 +41,7 @@ mvn -version
 git checkout ${branch}
 mvn versions:set -DnewVersion=${RELEASE_VERSION}
 git commit -am "Release: ${RELEASE_VERSION}"
-mvn clean deploy -Phdes-release --settings hdes-build-parent/ci-maven-settings.xml
+mvn clean deploy -Phdes-release --settings zoe-build-parent/ci-maven-settings.xml
 mvn versions:set -DnewVersion=${PROJECT_VERSION}
 git commit -am "Release: ${RELEASE_VERSION}"
 git push
