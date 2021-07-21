@@ -12,7 +12,7 @@ fi
 
 echo "Import GPG key"
 echo "$GPG_KEY" > private.key
-gpg --import ./private.key 
+gpg --batch --import ./private.key 
 rm ./private.key
 echo "JAVA_HOME '$JAVA_HOME'"
 
