@@ -219,6 +219,23 @@
         <version>${commons-collections.version}</version>
       </dependency>
 
+      <!-- Quarkus -->
+      <dependency>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-bom</artifactId>
+        <version>${quarkus.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+      <dependency>
+        <groupId>io.quarkus</groupId>
+        <artifactId>quarkus-bom-test</artifactId>
+        <version>${quarkus.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+
+
       <!-- Test dependencies -->
       <dependency>
         <groupId>junit</groupId>
