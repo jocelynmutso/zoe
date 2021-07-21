@@ -1,0 +1,24 @@
+quarkus:
+  http:
+    cors: true
+
+  log:
+    level: DEBUG
+    category: 
+      io.resys:
+        level: DEBUG
+
+
+  zoe-ide:
+    server-path: not-ready
+
+"%prod":
+  quarkus:
+
+"%dev":
+  quarkus:
+    log:
+      level: DEBUG
+      category: 
+        io.github.jocelynmutso:
+          level: DEBUG

@@ -4,17 +4,18 @@
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>io.github.jocelynmutso</groupId>
-    <artifactId>zoe-build-parent</artifactId>
+    <artifactId>zoe-quarkus-extensions</artifactId>
     <version>999-SNAPSHOT</version>
-    <relativePath>../zoe-build-parent/pom.xml</relativePath>
   </parent>
 
-  <artifactId>zoe-core</artifactId>
+  <artifactId>quarkus-zoe-ide-parent</artifactId>
   <packaging>pom</packaging>
 
+
   <modules>
-    <module>zoe-ide</module>
-    <module>zoe-ide-services</module>
+    <module>deployment</module>
+    <module>runtime</module>
   </modules>
+
 
 </project>
