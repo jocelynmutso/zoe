@@ -1,0 +1,37 @@
+[
+  {
+    "id": "1234",
+    "type": "page",
+    "body": {
+      "article": "877576465354",
+      "locale": "fi",
+      "content": "# markdown content"
+    }
+  },
+  {
+    "id": "3411",
+    "type": "locale",
+    "body": {
+      "value": "fi",
+      "enabled": "true"
+    }
+  },
+  {
+    "id": "1056",
+    "type": "article",
+    "body": {
+      "parentId": "Community",
+      "name": "Residence",
+      "order": "300"
+    }
+  },
+  {
+    "id": "5421",
+    "type": "release",
+    "body": {
+      "name": "v1.0",
+      "created": "11/04/2021",
+      "note": "Init"
+    }
+  }
+]
