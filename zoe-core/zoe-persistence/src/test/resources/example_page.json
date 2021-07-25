@@ -1,6 +1,6 @@
 [
   {
-    "id": "1234",
+    "id": "P1234",
     "type": "page",
     "body": {
       "article": "877576465354",
@@ -9,7 +9,7 @@
     }
   },
   {
-    "id": "3411",
+    "id": "L3411",
     "type": "locale",
     "body": {
       "value": "fi",
@@ -17,7 +17,7 @@
     }
   },
   {
-    "id": "1056",
+    "id": "A1056",
     "type": "article",
     "body": {
       "parentId": "Community",
@@ -26,12 +26,40 @@
     }
   },
   {
-    "id": "5421",
+    "id": "R5421",
     "type": "release",
     "body": {
       "name": "v1.0",
       "created": "11/04/2021",
       "note": "Init"
+    }
+  },
+  {
+    "id": "W4511",
+    "type": "workflow",
+    "body": {
+      "name": "BasicFlow",
+      "locale": "en",
+      "content": "General information",
+      "articles": [
+        "4533",
+        "3531",
+        "1098"
+      ]
+    }
+  },
+  {
+    "id": "LI332",
+    "type": "link",
+    "body": {
+      "articles": [
+        "4533",
+        "1098"
+      ],
+      "type": "internal",
+      "content": "www.example.com/about-us",
+      "locale": "en",
+      "description": "Read about us"
     }
   }
 ]
