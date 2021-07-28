@@ -32,13 +32,13 @@ public interface UpdateBuilder {
   
   interface PageMutator {
     String getPageId();
-    String getLocalisedContent();
+    String getContent();
     String getLocale();
   }
   
   interface LinkMutator {
     String getLinkId();
-    String getLocalisedContent(); 
+    String getContent(); 
     String getLocale(); 
     String getDescription();
   }
@@ -47,6 +47,6 @@ public interface UpdateBuilder {
     String getWorkflowId(); 
     String getName(); 
     String getLocale(); 
-    String getLocalisedContent();
+    String getContent();
   }
 }
