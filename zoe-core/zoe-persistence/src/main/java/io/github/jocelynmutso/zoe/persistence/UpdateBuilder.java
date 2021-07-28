@@ -16,11 +16,7 @@ public interface UpdateBuilder {
   Entity<Page> page(PageMutator changes);
   Entity<Link> link(LinkMutator changes);
   Entity<Workflow> workflow(WorkflowMutator changes);
-  
-  
-  /*
-    workflow(workflow: WorkflowMutator): Promise<Workflow>;
-   */
+
    
   interface LocaleMutator {
     String getLocaleId(); 

@@ -6,7 +6,8 @@ import java.util.List;
 public interface ZoePersistence {
   
   CreateBuilder create();
-  
+  UpdateBuilder update();
+  DeleteBuilder delete();
  
   
   
