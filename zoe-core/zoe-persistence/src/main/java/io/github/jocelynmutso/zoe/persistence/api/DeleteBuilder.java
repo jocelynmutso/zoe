@@ -1,13 +1,13 @@
-package io.github.jocelynmutso.zoe.persistence;
+package io.github.jocelynmutso.zoe.persistence.api;
 
 import org.immutables.value.Value;
 
-import io.github.jocelynmutso.zoe.persistence.ZoePersistence.Article;
-import io.github.jocelynmutso.zoe.persistence.ZoePersistence.Entity;
-import io.github.jocelynmutso.zoe.persistence.ZoePersistence.Link;
-import io.github.jocelynmutso.zoe.persistence.ZoePersistence.Locale;
-import io.github.jocelynmutso.zoe.persistence.ZoePersistence.Page;
-import io.github.jocelynmutso.zoe.persistence.ZoePersistence.Workflow;
+import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Article;
+import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Entity;
+import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Link;
+import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Locale;
+import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Page;
+import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Workflow;
 
 public interface DeleteBuilder {
 

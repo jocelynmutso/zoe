@@ -21,7 +21,9 @@ package io.github.jocelynmutso.zoe.persistence.test.config;
  */
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import org.bson.codecs.DocumentCodecProvider;
 import org.bson.codecs.ValueCodecProvider;
@@ -31,6 +33,9 @@ import org.bson.internal.ProvidersCodecRegistry;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.ServerAddress;
 import com.mongodb.reactivestreams.client.MongoClient;
@@ -43,9 +48,12 @@ import de.flapdoodle.embed.mongo.config.MongodConfig;
 import de.flapdoodle.embed.mongo.config.Net;
 import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.process.runtime.Network;
+import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence;
+import io.github.jocelynmutso.zoe.persistence.spi.ZoePersistenceImpl;
 import io.quarkus.mongodb.impl.ReactiveMongoClientImpl;
 import io.quarkus.mongodb.reactive.ReactiveMongoClient;
 import io.resys.thena.docdb.api.DocDB;
+import io.resys.thena.docdb.api.actions.RepoActions.RepoResult;
 import io.resys.thena.docdb.api.models.Diff;
 import io.resys.thena.docdb.api.models.Repo;
 import io.resys.thena.docdb.spi.ClientState;
@@ -55,6 +63,11 @@ import io.resys.thena.docdb.spi.DocDBPrettyPrinter;
 
 public abstract class MongoDbConfig {
   private static final MongodStarter starter = MongodStarter.getDefaultInstance();
+  private static ObjectMapper objectMapper = new ObjectMapper();
+  static {
+    objectMapper.registerModule(new JavaTimeModule());
+    objectMapper.registerModule(new Jdk8Module());
+  }
   
   private MongodExecutable executable;
   private MongodProcess process;
@@ -66,7 +79,6 @@ public abstract class MongoDbConfig {
     this.setUp();
   }
 
-
   @AfterEach
   void stopDB() {
     this.tearDown();
@@ -75,33 +87,22 @@ public abstract class MongoDbConfig {
   private void setUp() {
     try {
       final int port = 12345;
-      
-      CodecRegistry codecRegistry = new ProvidersCodecRegistry(Arrays.asList(
-          new DocDBCodecProvider(),
-          new DocumentCodecProvider(),
-          new Jsr310CodecProvider(),
-          new ValueCodecProvider()
-          ));
-      
-      executable = starter.prepare(MongodConfig.builder()
-        .version(Version.Main.PRODUCTION)
-        .net(new Net("localhost", port, Network.localhostIsIPv6()))
-        .build());
+
+      CodecRegistry codecRegistry = new ProvidersCodecRegistry(Arrays.asList(new DocDBCodecProvider(),
+          new DocumentCodecProvider(), new Jsr310CodecProvider(), new ValueCodecProvider()));
+
+      executable = starter.prepare(MongodConfig.builder().version(Version.Main.PRODUCTION)
+          .net(new Net("localhost", port, Network.localhostIsIPv6())).build());
       process = executable.start();
-      
-      MongoClient client = MongoClients.create(MongoClientSettings.builder()
-          .codecRegistry(codecRegistry)
+
+      MongoClient client = MongoClients.create(MongoClientSettings.builder().codecRegistry(codecRegistry)
           .applyToConnectionPoolSettings(builder -> builder.build())
-          .applyToClusterSettings(builder -> builder
-              .hosts(Arrays.asList(new ServerAddress("localhost", port)))
-              .build())
+          .applyToClusterSettings(builder -> builder.hosts(Arrays.asList(new ServerAddress("localhost", port))).build())
           .build());
+
+      this.mongo = new ReactiveMongoClientImpl(client);
+      this.client = DocDBFactory.create().db("junit").client(mongo).build();
       
-        this.mongo = new ReactiveMongoClientImpl(client);
-        this.client = DocDBFactory.create()
-            .db("junit")
-            .client(mongo)
-            .build();
     } catch (IOException e) {
       tearDown();
       throw new RuntimeException(e.getMessage(), e);
@@ -126,13 +127,51 @@ public abstract class MongoDbConfig {
     final String result = new DocDBPrettyPrinter(createState()).print(repo);
     System.out.println(result);
   }
+
   public void printRepo(Repo repo) {
     final String result = new DocDBPrettyPrinter(createState()).print(repo);
     System.out.println(result);
   }
-  
-  
+
   public DocDB getClient() {
     return client;
+  }
+
+  public void prettyPrint(String repoId) {
+    Repo repo = getClient().repo().query().id(repoId).get()
+        .await().atMost(Duration.ofMinutes(1));
+    
+    printRepo(repo);
+  }
+
+  public ZoePersistence getPersistence(String repoId) {
+    final DocDB client = getClient();
+    
+    // create project
+    RepoResult repo = getClient().repo().create()
+        .name(repoId)
+        .build()
+        .await().atMost(Duration.ofMinutes(1));
+    
+    final AtomicInteger gid = new AtomicInteger(0);
+    
+    return ZoePersistenceImpl.builder()
+        .config((builder) -> builder
+            .client(client)
+            .repoName(repoId)
+            .headName("zoe-main")
+            .serializer((entity) -> {
+              try {
+                return objectMapper.writeValueAsString(entity);
+              } catch (IOException e) {
+                throw new RuntimeException(e.getMessage(), e);
+              }
+            })
+            .gidProvider(type -> {
+               return type + "-" + gid.incrementAndGet();
+            })
+            .authorProvider(() -> "junit-test"))
+            
+        .build();
   }
 }
