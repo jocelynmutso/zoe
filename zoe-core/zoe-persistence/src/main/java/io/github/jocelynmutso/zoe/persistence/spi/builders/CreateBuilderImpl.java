@@ -3,6 +3,7 @@ package io.github.jocelynmutso.zoe.persistence.spi.builders;
 import io.github.jocelynmutso.zoe.persistence.api.CreateBuilder;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableArticle;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableEntity;
+import io.github.jocelynmutso.zoe.persistence.api.ImmutableRelease;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Article;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Entity;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.EntityType;
@@ -50,8 +51,26 @@ public class CreateBuilderImpl implements CreateBuilder {
   }
 
   @Override
-  public Entity<Release> release(CreateRelease init) {
-    return null;
+  public Uni<Entity<Release>> release(CreateRelease init) {
+    final var gid = gid(EntityType.RELEASE);
+    final var release = ImmutableRelease.builder()
+        .name(init.getName())
+        .note(init.getNote())
+        .build();
+    final Entity<Release> entity = ImmutableEntity.<Release>builder()
+        .id(gid)
+        .type(EntityType.RELEASE)
+        .body(release)
+        .build();
+        
+    return config.getClient().commit().head()
+        .head(config.getRepoName(), config.getHeadName())
+        .message("creating-release")
+        .author(config.getAuthorProvider().getAuthor())
+        .append(gid, config.getSerializer().toString(entity))
+        .build().onItem().transform(commit -> {
+          return entity;
+        });
   }
 
   @Override

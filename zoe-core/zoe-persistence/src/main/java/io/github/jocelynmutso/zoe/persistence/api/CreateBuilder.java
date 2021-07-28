@@ -15,8 +15,8 @@ import io.smallrye.mutiny.Uni;
 
 public interface CreateBuilder {
   Uni<Entity<Article>> article(CreateArticle init);
+  Uni<Entity<Release>> release(CreateRelease init);
   
-  Entity<Release> release(CreateRelease init);
   Entity<Locale> locale(CreateLocale init);
   Entity<Page> page(CreatePage init);
   Entity<Link> link(CreateLink init);
