@@ -4,7 +4,12 @@ import java.io.Serializable;
 import java.util.List;
 
 public interface ZoePersistence {
-
+  
+  CreateBuilder create();
+  
+ 
+  
+  
   interface Entity<T extends EntityBody> extends Serializable {
     String getId();
     EntityType getType();
