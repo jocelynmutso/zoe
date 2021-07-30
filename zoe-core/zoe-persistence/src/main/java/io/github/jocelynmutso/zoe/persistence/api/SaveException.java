@@ -3,13 +3,13 @@ package io.github.jocelynmutso.zoe.persistence.api;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Entity;
 import io.resys.thena.docdb.api.actions.CommitActions.CommitResult;
 
-public class CreateException extends RuntimeException {
+public class SaveException extends RuntimeException {
   private static final long serialVersionUID = 7190168525508589141L;
   
   private final Entity<?> entity;
   private final CommitResult commit;
   
-  public CreateException(Entity<?> entity, CommitResult commit) {
+  public SaveException(Entity<?> entity, CommitResult commit) {
     super(msg(entity, commit));
     this.entity = entity;
     this.commit = commit;

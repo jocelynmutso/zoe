@@ -33,6 +33,7 @@ import org.bson.internal.ProvidersCodecRegistry;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -49,6 +50,13 @@ import de.flapdoodle.embed.mongo.config.Net;
 import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.process.runtime.Network;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence;
+import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Article;
+import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Entity;
+import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Link;
+import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Locale;
+import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Page;
+import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Release;
+import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Workflow;
 import io.github.jocelynmutso.zoe.persistence.spi.ZoePersistenceImpl;
 import io.quarkus.mongodb.impl.ReactiveMongoClientImpl;
 import io.quarkus.mongodb.reactive.ReactiveMongoClient;
@@ -160,6 +168,35 @@ public abstract class MongoDbConfig {
             .client(client)
             .repoName(repoId)
             .headName("zoe-main")
+            .deserializer((entityType, value) -> {
+              try {
+
+                switch(entityType) {
+                  case ARTICLE: {
+                    return objectMapper.readValue(value, new TypeReference<Entity<Article>>() {});  
+                  }
+                  case LINK: {
+                    return objectMapper.readValue(value, new TypeReference<Entity<Link>>() {});  
+                  }
+                  case LOCALE: {
+                    return objectMapper.readValue(value, new TypeReference<Entity<Locale>>() {});  
+                  }
+                  case PAGE: {
+                    return objectMapper.readValue(value, new TypeReference<Entity<Page>>() {});  
+                  }
+                  case RELEASE: {
+                    return objectMapper.readValue(value, new TypeReference<Entity<Release>>() {});  
+                  }
+                  case WORKFLOW: {
+                    return objectMapper.readValue(value, new TypeReference<Entity<Workflow>>() {});  
+                  }
+                  default: throw new RuntimeException("can't map: " + entityType);
+                }
+                
+              } catch (IOException e) {
+                throw new RuntimeException(e.getMessage(), e);
+              }
+            })
             .serializer((entity) -> {
               try {
                 return objectMapper.writeValueAsString(entity);

@@ -3,6 +3,7 @@ package io.github.jocelynmutso.zoe.persistence.spi;
 import org.immutables.value.Value;
 
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Entity;
+import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.EntityBody;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.EntityType;
 import io.resys.thena.docdb.api.DocDB;
 
@@ -13,6 +14,7 @@ public interface PersistenceConfig {
   String getHeadName();
   AuthorProvider getAuthorProvider();
   Serializer getSerializer();
+  Deserializer getDeserializer();
   GidProvider getGidProvider();
   
   @FunctionalInterface
@@ -23,6 +25,11 @@ public interface PersistenceConfig {
   @FunctionalInterface
   interface AuthorProvider {
     String getAuthor();
+  }
+  
+  @FunctionalInterface
+  interface Deserializer {
+    Entity<?> fromString(EntityType type, String value);
   }
   
   @FunctionalInterface

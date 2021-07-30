@@ -3,8 +3,6 @@ package io.github.jocelynmutso.zoe.persistence.test;
 import java.time.Duration;
 
 import org.junit.jupiter.api.Test;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateArticle;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateLink;
@@ -12,7 +10,6 @@ import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateLocale;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreatePage;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateRelease;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateWorkflow;
-import io.github.jocelynmutso.zoe.persistence.api.ImmutableLocale;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Article;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Entity;
 import io.github.jocelynmutso.zoe.persistence.test.config.MongoDbConfig;
@@ -20,14 +17,13 @@ import io.github.jocelynmutso.zoe.persistence.test.config.MongoDbConfig;
 
 public class PersistenceTest extends MongoDbConfig {
 
-  private static final Logger LOGGER = LoggerFactory.getLogger(PersistenceTest.class);
   
   
   @Test
   public void test1() {
     final var repo = getPersistence("test1");
     
-    repo.create().article(
+   Entity<Article> article1 = repo.create().article(
         ImmutableCreateArticle.builder().name("My first article").order(100).build()
     ).await().atMost(Duration.ofMinutes(1));
 
@@ -64,5 +60,12 @@ public class PersistenceTest extends MongoDbConfig {
       ).await().atMost(Duration.ofMinutes(1));
     
     super.prettyPrint("test1");
+    
+    
+    repo.delete().article(article1.getId())
+    .await().atMost(Duration.ofMinutes(1));
+    
+    super.prettyPrint("test1");
   }
+
 }

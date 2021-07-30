@@ -6,6 +6,9 @@ import java.util.Optional;
 
 import org.immutables.value.Value;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 public interface ZoePersistence {
   
   CreateBuilder create();
@@ -13,6 +16,8 @@ public interface ZoePersistence {
   DeleteBuilder delete();
  
   @Value.Immutable
+  @JsonSerialize(as = ImmutableEntity.class)
+  @JsonDeserialize(as = ImmutableEntity.class)
   interface Entity<T extends EntityBody> extends Serializable {
     String getId();
     EntityType getType();
@@ -36,6 +41,8 @@ public interface ZoePersistence {
   }
   
   @Value.Immutable
+  @JsonSerialize(as = ImmutableArticle.class)
+  @JsonDeserialize(as = ImmutableArticle.class)
   interface Article extends EntityBody {
     Optional<String> getParentId();
     String getName();

@@ -7,6 +7,7 @@ import io.github.jocelynmutso.zoe.persistence.api.DeleteBuilder;
 import io.github.jocelynmutso.zoe.persistence.api.UpdateBuilder;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence;
 import io.github.jocelynmutso.zoe.persistence.spi.builders.CreateBuilderImpl;
+import io.github.jocelynmutso.zoe.persistence.spi.builders.DeleteBuilderImpl;
 
 public class ZoePersistenceImpl implements ZoePersistence {
 
@@ -30,8 +31,7 @@ public class ZoePersistenceImpl implements ZoePersistence {
 
   @Override
   public DeleteBuilder delete() {
-    // TODO Auto-generated method stub
-    return null;
+    return new DeleteBuilderImpl(config);
   }
 
   

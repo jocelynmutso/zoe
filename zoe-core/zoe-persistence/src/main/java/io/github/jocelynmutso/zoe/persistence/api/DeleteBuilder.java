@@ -8,16 +8,17 @@ import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Link;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Locale;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Page;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Workflow;
+import io.smallrye.mutiny.Uni;
 
 public interface DeleteBuilder {
 
-  Entity<Locale> locale(String localeId);
-  Entity<Article> article(String ArticleId);
-  Entity<Page> page(String PageId);
-  Entity<Link> link(String LinkId);
-  Entity<Link> linkArticlePage(LinkArticlePage linkArticlePage);
-  Entity<Workflow> workflow(String WorkflowId);
-  Entity<Workflow> workflowArticlePage(WorkflowArticlePage workflowArticlePage);
+  Uni<Entity<Locale>> locale(String localeId);
+  Uni<Entity<Article>> article(String articleId);
+  Uni<Entity<Page>> page(String pageId);
+  Uni<Entity<Link>> link(String linkId);
+  Uni<Entity<Link>> linkArticlePage(LinkArticlePage linkArticlePage);
+  Uni<Entity<Workflow>> workflow(String workflowId);
+  Uni<Entity<Workflow>> workflowArticlePage(WorkflowArticlePage workflowArticlePage);
 
   
   @Value.Immutable

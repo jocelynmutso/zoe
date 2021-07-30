@@ -1,7 +1,7 @@
 package io.github.jocelynmutso.zoe.persistence.spi.builders;
 
 import io.github.jocelynmutso.zoe.persistence.api.CreateBuilder;
-import io.github.jocelynmutso.zoe.persistence.api.CreateException;
+import io.github.jocelynmutso.zoe.persistence.api.SaveException;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableArticle;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableEntity;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableLink;
@@ -55,7 +55,7 @@ public class CreateBuilderImpl implements CreateBuilder {
         if(commit.getStatus() == CommitStatus.OK) {
           return entity;
         }
-        throw new CreateException(entity, commit);
+        throw new SaveException(entity, commit);
       });
   }
 
@@ -84,7 +84,7 @@ public class CreateBuilderImpl implements CreateBuilder {
           if(commit.getStatus() == CommitStatus.OK) {
             return entity;
           }
-          throw new CreateException(entity, commit);
+          throw new SaveException(entity, commit);
         });
   }
 
@@ -111,7 +111,7 @@ public class CreateBuilderImpl implements CreateBuilder {
           if(commit.getStatus() == CommitStatus.OK) {
             return entity;
           }
-          throw new CreateException(entity, commit);
+          throw new SaveException(entity, commit);
         });
   }
 
@@ -140,7 +140,7 @@ public class CreateBuilderImpl implements CreateBuilder {
           if(commit.getStatus() == CommitStatus.OK) {
             return entity;
           }
-          throw new CreateException(entity, commit);
+          throw new SaveException(entity, commit);
         });
   }
 
@@ -170,7 +170,7 @@ public class CreateBuilderImpl implements CreateBuilder {
         if(commit.getStatus() == CommitStatus.OK) {
           return entity;
         }
-        throw new CreateException(entity, commit);
+        throw new SaveException(entity, commit);
       });
   }
 
@@ -199,7 +199,7 @@ public class CreateBuilderImpl implements CreateBuilder {
             if(commit.getStatus() == CommitStatus.OK) {
               return entity;
             }
-            throw new CreateException(entity, commit);
+            throw new SaveException(entity, commit);
           });
   }
   
