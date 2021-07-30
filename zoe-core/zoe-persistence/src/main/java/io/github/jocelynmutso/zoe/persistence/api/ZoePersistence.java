@@ -53,7 +53,7 @@ public interface ZoePersistence {
   @Value.Immutable
   interface Locale extends EntityBody {
     String getValue();
-    Boolean getEnabled();
+   // Boolean getEnabled();
   }
   
   @Value.Immutable

@@ -104,6 +104,7 @@ public class CreateBuilderImpl implements CreateBuilder {
     return config.getClient().commit().head()
         .head(config.getRepoName(), config.getHeadName())
         .message("creating-locale")
+        .parentIsLatest()
         .author(config.getAuthorProvider().getAuthor())
         .append(gid, config.getSerializer().toString(entity))
         .build().onItem().transform(commit -> {
@@ -132,6 +133,7 @@ public class CreateBuilderImpl implements CreateBuilder {
     return config.getClient().commit().head()
         .head(config.getRepoName(), config.getHeadName())
         .message("creating-page")
+        .parentIsLatest()
         .author(config.getAuthorProvider().getAuthor())
         .append(gid, config.getSerializer().toString(entity))
         .build().onItem().transform(commit -> {
