@@ -14,14 +14,21 @@ import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Workflow;
 import io.smallrye.mutiny.Uni;
 
 public interface CreateBuilder {
+  
   Uni<Entity<Article>> article(CreateArticle init);
   Uni<Entity<Release>> release(CreateRelease init);
-  
-  Entity<Locale> locale(CreateLocale init);
-  Entity<Page> page(CreatePage init);
-  Entity<Link> link(CreateLink init);
-  Entity<Workflow> workflow(CreateWorkflow init);
+  Uni<Entity<Locale>> locale(CreateLocale init);
+  Uni<Entity<Page>> page(CreatePage init);
+  Uni<Entity<Link>> link(CreateLink init);
+  Uni<Entity<Workflow>> workflow(CreateWorkflow init);
 
+  
+  @Value.Immutable
+  interface CreateArticle {
+    Optional<String> getParentId();
+    String getName();
+    Optional<Integer> getOrder(); 
+  }
   
   @Value.Immutable
   interface CreateRelease {
@@ -32,13 +39,6 @@ public interface CreateBuilder {
   @Value.Immutable
   interface CreateLocale {
     String getLocale();
-  }
-  
-  @Value.Immutable
-  interface CreateArticle {
-    Optional<String> getParentId();
-    String getName();
-    Optional<Integer> getOrder(); 
   }
   
   @Value.Immutable

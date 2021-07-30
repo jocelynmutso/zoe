@@ -67,7 +67,6 @@ public interface ZoePersistence {
   @Value.Immutable
   interface Release extends EntityBody {
     String getName();
-    String getCreated();
     String getNote();
   }
 }

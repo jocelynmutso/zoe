@@ -1,9 +1,14 @@
 package io.github.jocelynmutso.zoe.persistence.spi.builders;
 
 import io.github.jocelynmutso.zoe.persistence.api.CreateBuilder;
+import io.github.jocelynmutso.zoe.persistence.api.CreateException;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableArticle;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableEntity;
+import io.github.jocelynmutso.zoe.persistence.api.ImmutableLink;
+import io.github.jocelynmutso.zoe.persistence.api.ImmutableLocale;
+import io.github.jocelynmutso.zoe.persistence.api.ImmutablePage;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableRelease;
+import io.github.jocelynmutso.zoe.persistence.api.ImmutableWorkflow;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Article;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Entity;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.EntityType;
@@ -13,10 +18,12 @@ import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Page;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Release;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Workflow;
 import io.github.jocelynmutso.zoe.persistence.spi.PersistenceConfig;
+import io.resys.thena.docdb.api.actions.CommitActions.CommitStatus;
 import io.smallrye.mutiny.Uni;
 
-public class CreateBuilderImpl implements CreateBuilder {
 
+public class CreateBuilderImpl implements CreateBuilder {
+  
   private final PersistenceConfig config;
   
   public CreateBuilderImpl(PersistenceConfig config) {
@@ -24,7 +31,6 @@ public class CreateBuilderImpl implements CreateBuilder {
     this.config = config;
   }
   
-
   @Override
   public Uni<Entity<Article>> article(CreateArticle init) {
     final var gid = gid(EntityType.ARTICLE);
@@ -46,17 +52,22 @@ public class CreateBuilderImpl implements CreateBuilder {
       .author(config.getAuthorProvider().getAuthor())
       .append(gid, config.getSerializer().toString(entity))
       .build().onItem().transform(commit -> {
-        return entity;
+        if(commit.getStatus() == CommitStatus.OK) {
+          return entity;
+        }
+        throw new CreateException(entity, commit);
       });
   }
 
   @Override
   public Uni<Entity<Release>> release(CreateRelease init) {
     final var gid = gid(EntityType.RELEASE);
+    
     final var release = ImmutableRelease.builder()
         .name(init.getName())
-        .note(init.getNote())
+        .note(init.getNote().orElse(""))
         .build();
+
     final Entity<Release> entity = ImmutableEntity.<Release>builder()
         .id(gid)
         .type(EntityType.RELEASE)
@@ -66,6 +77,90 @@ public class CreateBuilderImpl implements CreateBuilder {
     return config.getClient().commit().head()
         .head(config.getRepoName(), config.getHeadName())
         .message("creating-release")
+        .parentIsLatest()
+        .author(config.getAuthorProvider().getAuthor())
+        .append(gid, config.getSerializer().toString(entity))
+        .build().onItem().transform(commit -> {
+          if(commit.getStatus() == CommitStatus.OK) {
+            return entity;
+          }
+          throw new CreateException(entity, commit);
+        });
+  }
+
+  @Override
+  public Uni<Entity<Locale>> locale(CreateLocale init) {
+    final var gid = gid(EntityType.LOCALE);
+    final var locale = ImmutableLocale.builder()
+        .value(init.getLocale())
+        .build();
+    
+    final Entity<Locale> entity = ImmutableEntity.<Locale>builder()
+        .id(gid)
+        .type(EntityType.LOCALE)
+        .body(locale)
+        .build();
+    
+    return config.getClient().commit().head()
+        .head(config.getRepoName(), config.getHeadName())
+        .message("creating-locale")
+        .author(config.getAuthorProvider().getAuthor())
+        .append(gid, config.getSerializer().toString(entity))
+        .build().onItem().transform(commit -> {
+          if(commit.getStatus() == CommitStatus.OK) {
+            return entity;
+          }
+          throw new CreateException(entity, commit);
+        });
+  }
+
+  @Override
+  public Uni<Entity<Page>> page(CreatePage init) {
+    final var gid = gid(EntityType.PAGE);
+    final var page = ImmutablePage.builder()
+        .article(init.getArticleId())
+        .locale(init.getLocale())
+        .content(init.getContent().orElse(""))
+        .build();
+    
+    final Entity<Page> entity = ImmutableEntity.<Page>builder()
+        .id(gid)
+        .type(EntityType.PAGE)
+        .body(page)
+        .build();
+    
+    return config.getClient().commit().head()
+        .head(config.getRepoName(), config.getHeadName())
+        .message("creating-page")
+        .author(config.getAuthorProvider().getAuthor())
+        .append(gid, config.getSerializer().toString(entity))
+        .build().onItem().transform(commit -> {
+          if(commit.getStatus() == CommitStatus.OK) {
+            return entity;
+          }
+          throw new CreateException(entity, commit);
+        });
+  }
+
+  @Override
+  public Uni<Entity<Link>> link(CreateLink init) {
+      final var gid = gid(EntityType.LINK);
+      final var link = ImmutableLink.builder()
+        .description(init.getDescription())
+        .locale(init.getLocale())
+        .type(init.getType())
+        .content(init.getValue())
+        .build();
+      
+      final Entity<Link> entity = ImmutableEntity.<Link>builder()
+        .id(gid)
+        .type(EntityType.PAGE)
+        .body(link)
+        .build();
+    
+      return config.getClient().commit().head()
+        .head(config.getRepoName(), config.getHeadName())
+        .message("creating-link")
         .author(config.getAuthorProvider().getAuthor())
         .append(gid, config.getSerializer().toString(entity))
         .build().onItem().transform(commit -> {
@@ -74,31 +169,34 @@ public class CreateBuilderImpl implements CreateBuilder {
   }
 
   @Override
-  public Entity<Locale> locale(CreateLocale init) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public Entity<Page> page(CreatePage init) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public Entity<Link> link(CreateLink init) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
-  @Override
-  public Entity<Workflow> workflow(CreateWorkflow init) {
-    // TODO Auto-generated method stub
-    return null;
+  public Uni<Entity<Workflow>> workflow(CreateWorkflow init) {
+      final var gid = gid(EntityType.WORKFLOW);
+      final var workflow = ImmutableWorkflow.builder()
+        .name(init.getName())
+        .locale(init.getLocale())
+        .content(init.getContent())
+        .build();
+      
+      final Entity<Workflow> entity = ImmutableEntity.<Workflow>builder()
+          .id(gid)
+          .type(EntityType.PAGE)
+          .body(workflow)
+          .build();
+      
+      return config.getClient().commit().head()
+          .head(config.getRepoName(), config.getHeadName())
+          .message("creating-workflow")
+          .author(config.getAuthorProvider().getAuthor())
+          .append(gid, config.getSerializer().toString(entity))
+          .build().onItem().transform(commit -> {
+            if(commit.getStatus() == CommitStatus.OK) {
+              return entity;
+            }
+            throw new CreateException(entity, commit);
+          });
   }
   
   private String gid(EntityType type) {
     return config.getGidProvider().getNextId(type);
   }
-
 }
