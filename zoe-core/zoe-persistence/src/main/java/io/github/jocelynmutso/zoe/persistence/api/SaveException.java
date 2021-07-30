@@ -30,7 +30,7 @@ public class SaveException extends RuntimeException {
       .append("  - ").append(msg.getText());
     }
     
-    return new StringBuilder("Can't create entity: ").append(entity.getType())
+    return new StringBuilder("Can't save entity: ").append(entity.getType())
         .append(", because of: ").append(messages)
         .toString();
   }

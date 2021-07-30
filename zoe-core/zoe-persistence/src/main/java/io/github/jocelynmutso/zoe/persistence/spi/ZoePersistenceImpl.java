@@ -8,6 +8,7 @@ import io.github.jocelynmutso.zoe.persistence.api.UpdateBuilder;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence;
 import io.github.jocelynmutso.zoe.persistence.spi.builders.CreateBuilderImpl;
 import io.github.jocelynmutso.zoe.persistence.spi.builders.DeleteBuilderImpl;
+import io.github.jocelynmutso.zoe.persistence.spi.builders.UpdateBuilderImpl;
 
 public class ZoePersistenceImpl implements ZoePersistence {
 
@@ -25,8 +26,7 @@ public class ZoePersistenceImpl implements ZoePersistence {
 
   @Override
   public UpdateBuilder update() {
-    // TODO Auto-generated method stub
-    return null;
+    return new UpdateBuilderImpl(config);
   }
 
   @Override
