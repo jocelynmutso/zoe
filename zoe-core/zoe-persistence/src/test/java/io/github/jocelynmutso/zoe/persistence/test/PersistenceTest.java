@@ -27,7 +27,7 @@ public class PersistenceTest extends MongoDbConfig {
         ImmutableCreateArticle.builder().name("My first article").order(100).build()
     ).await().atMost(Duration.ofMinutes(1));
 
-    repo.create().article(
+   Entity<Article> article2 = repo.create().article(
         ImmutableCreateArticle.builder().name("My second article").order(100).build()
     ).await().atMost(Duration.ofMinutes(1));
     
@@ -61,8 +61,10 @@ public class PersistenceTest extends MongoDbConfig {
     
     super.prettyPrint("test1");
     
-    
     repo.delete().article(article1.getId())
+    .await().atMost(Duration.ofMinutes(1));
+    
+    repo.delete().article(article2.getId())
     .await().atMost(Duration.ofMinutes(1));
     
     super.prettyPrint("test1");

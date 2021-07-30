@@ -56,33 +56,133 @@ public class DeleteBuilderImpl implements DeleteBuilder {
     });
   }
   
+  @SuppressWarnings("unchecked")
   @Override
   public Uni<Entity<Locale>> locale(String localeId) {
-    // TODO Auto-generated method stub
-    return null;
+    return config.getClient()
+    .objects().blobState()
+    .repo(config.getRepoName())
+    .anyId(config.getHeadName())
+    .blobName(localeId)
+    .build()
+    .onItem().transformToUni(state -> {
+      if(state.getStatus() == ObjectsStatus.OK) {
+        Entity<Locale> entity = (Entity<Locale>) config.getDeserializer()
+            .fromString(EntityType.LOCALE, state.getObjects().getBlob().getValue());
+        
+        return config.getClient().commit().head()
+            .head(config.getRepoName(), config.getHeadName())
+            .message("delete-locale: " + localeId)
+            .parentIsLatest()
+            .author(config.getAuthorProvider().getAuthor())
+            .remove(localeId)
+            .build().onItem().transform(commit -> {
+              if(commit.getStatus() == CommitStatus.OK) {
+                return entity;
+              }
+              throw new SaveException(entity, commit);
+            });
+      }
+      throw new DeleteException(localeId, EntityType.LOCALE, state);
+    });
   }
 
-
+  @SuppressWarnings("unchecked")
   @Override
   public Uni<Entity<Page>> page(String PageId) {
-    // TODO Auto-generated method stub
-    return null;
+    return config.getClient()
+        .objects().blobState()
+        .repo(config.getRepoName())
+        .anyId(config.getHeadName())
+        .blobName(PageId)
+        .build()
+        .onItem().transformToUni(state -> {
+          if(state.getStatus() == ObjectsStatus.OK) {
+            Entity<Page> entity = (Entity<Page>) config.getDeserializer()
+                .fromString(EntityType.PAGE, state.getObjects().getBlob().getValue());
+            
+            return config.getClient().commit().head()
+                .head(config.getRepoName(), config.getHeadName())
+                .message("delete-page: " + PageId)
+                .parentIsLatest()
+                .author(config.getAuthorProvider().getAuthor())
+                .remove(PageId)
+                .build().onItem().transform(commit -> {
+                  if(commit.getStatus() == CommitStatus.OK) {
+                    return entity;
+                  }
+                  throw new SaveException(entity, commit);
+                });
+          }
+          throw new DeleteException(PageId, EntityType.PAGE, state);
+        });
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public Uni<Entity<Link>> link(String LinkId) {
-    // TODO Auto-generated method stub
-    return null;
+    return config.getClient()
+        .objects().blobState()
+        .repo(config.getRepoName())
+        .anyId(config.getHeadName())
+        .blobName(LinkId)
+        .build()
+        .onItem().transformToUni(state -> {
+          if(state.getStatus() == ObjectsStatus.OK) {
+            Entity<Link> entity = (Entity<Link>) config.getDeserializer()
+                .fromString(EntityType.LINK, state.getObjects().getBlob().getValue());
+            
+            return config.getClient().commit().head()
+                .head(config.getRepoName(), config.getHeadName())
+                .message("delete-link: " + LinkId)
+                .parentIsLatest()
+                .author(config.getAuthorProvider().getAuthor())
+                .remove(LinkId)
+                .build().onItem().transform(commit -> {
+                  if(commit.getStatus() == CommitStatus.OK) {
+                    return entity;
+                  }
+                  throw new SaveException(entity, commit);
+                });
+          }
+          throw new DeleteException(LinkId, EntityType.LINK, state);
+        });
   }
-
-  @Override
-  public Uni<Entity<Link>> linkArticlePage(LinkArticlePage linkArticlePage) {
-    // TODO Auto-generated method stub
-    return null;
-  }
-
+  
+  @SuppressWarnings("unchecked")
   @Override
   public Uni<Entity<Workflow>> workflow(String WorkflowId) {
+    return config.getClient()
+        .objects().blobState()
+        .repo(config.getRepoName())
+        .anyId(config.getHeadName())
+        .blobName(WorkflowId)
+        .build()
+        .onItem().transformToUni(state -> {
+          if(state.getStatus() == ObjectsStatus.OK) {
+            Entity<Workflow> entity = (Entity<Workflow>) config.getDeserializer()
+                .fromString(EntityType.WORKFLOW, state.getObjects().getBlob().getValue());
+            
+            return config.getClient().commit().head()
+                .head(config.getRepoName(), config.getHeadName())
+                .message("delete-link: " + WorkflowId)
+                .parentIsLatest()
+                .author(config.getAuthorProvider().getAuthor())
+                .remove(WorkflowId)
+                .build().onItem().transform(commit -> {
+                  if(commit.getStatus() == CommitStatus.OK) {
+                    return entity;
+                  }
+                  throw new SaveException(entity, commit);
+                });
+          }
+          throw new DeleteException(WorkflowId, EntityType.WORKFLOW, state);
+        });
+  }
+
+  @SuppressWarnings("unchecked")
+  @Override
+  public Uni<Entity<Link>> linkArticlePage(LinkArticlePage linkArticlePage) {
     // TODO Auto-generated method stub
     return null;
   }
