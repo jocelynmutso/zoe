@@ -32,6 +32,8 @@ public interface ZoePersistence {
   }
 
   @Value.Immutable
+  @JsonSerialize(as = ImmutableLink.class)
+  @JsonDeserialize(as = ImmutableLink.class)
   interface Link extends EntityBody {
     List<String> getArticles();
     String getType();
@@ -50,6 +52,8 @@ public interface ZoePersistence {
   }
   
   @Value.Immutable
+  @JsonSerialize(as = ImmutablePage.class)
+  @JsonDeserialize(as = ImmutablePage.class)
   interface Page extends EntityBody {
     String getArticle();
     String getLocale();
@@ -58,12 +62,16 @@ public interface ZoePersistence {
   }
   
   @Value.Immutable
+  @JsonSerialize(as = ImmutableLocale.class)
+  @JsonDeserialize(as = ImmutableLocale.class)
   interface Locale extends EntityBody {
     String getValue();
    // Boolean getEnabled();
   }
   
   @Value.Immutable
+  @JsonSerialize(as = ImmutableWorkflow.class)
+  @JsonDeserialize(as = ImmutableWorkflow.class)
   interface Workflow extends EntityBody {
     String getName();
     String getLocale();
@@ -72,6 +80,8 @@ public interface ZoePersistence {
   }
   
   @Value.Immutable
+  @JsonSerialize(as = ImmutableRelease.class)
+  @JsonDeserialize(as = ImmutableRelease.class)
   interface Release extends EntityBody {
     String getName();
     String getNote();

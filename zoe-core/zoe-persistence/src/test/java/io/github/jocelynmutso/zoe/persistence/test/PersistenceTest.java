@@ -12,6 +12,10 @@ import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateRelease;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateWorkflow;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Article;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Entity;
+import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Link;
+import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Locale;
+import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Page;
+import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Workflow;
 import io.github.jocelynmutso.zoe.persistence.test.config.MongoDbConfig;
 
 
@@ -39,11 +43,11 @@ public class PersistenceTest extends MongoDbConfig {
         ImmutableCreateRelease.builder().name("v2.4").note("new content").build()
      ).await().atMost(Duration.ofMinutes(1));
     
-    repo.create().locale(
+    Entity<Locale> locale1 = repo.create().locale(
         ImmutableCreateLocale.builder().locale("en").build()
       ).await().atMost(Duration.ofMinutes(1));
     
-    repo.create().page(
+    Entity<Page> page1 = repo.create().page(
         ImmutableCreatePage.builder().articleId("A1").locale("en").content("# English content").build()
       ).await().atMost(Duration.ofMinutes(1));
     
@@ -51,11 +55,11 @@ public class PersistenceTest extends MongoDbConfig {
         ImmutableCreatePage.builder().articleId("A1").locale("fi").content("# Finnish content").build()
       ).await().atMost(Duration.ofMinutes(1));
     
-    repo.create().link(
+    Entity<Link> link1 = repo.create().link(
         ImmutableCreateLink.builder().type("internal").locale("en").description("click me").value("www.example.com").build()
       ).await().atMost(Duration.ofMinutes(1));
     
-    repo.create().workflow( 
+    Entity<Workflow> workflow1 = repo.create().workflow( 
         ImmutableCreateWorkflow.builder().name("Form1").locale("en").content("firstForm").build()
       ).await().atMost(Duration.ofMinutes(1));
     
@@ -67,6 +71,18 @@ public class PersistenceTest extends MongoDbConfig {
     repo.delete().article(article2.getId())
     .await().atMost(Duration.ofMinutes(1));
     
+    repo.delete().locale(locale1.getId())
+    .await().atMost(Duration.ofMinutes(1));
+    
+    repo.delete().page(page1.getId())
+    .await().atMost(Duration.ofMinutes(1));
+    
+    repo.delete().link(link1.getId())
+    .await().atMost(Duration.ofMinutes(1));
+    
+    repo.delete().workflow(workflow1.getId())
+    .await().atMost(Duration.ofMinutes(1));
+      
     super.prettyPrint("test1");
   }
 

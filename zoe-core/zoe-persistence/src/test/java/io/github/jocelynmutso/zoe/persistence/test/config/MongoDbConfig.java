@@ -35,6 +35,7 @@ import org.junit.jupiter.api.BeforeEach;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.mongodb.MongoClientSettings;
@@ -73,6 +74,7 @@ public abstract class MongoDbConfig {
   private static final MongodStarter starter = MongodStarter.getDefaultInstance();
   private static ObjectMapper objectMapper = new ObjectMapper();
   static {
+    objectMapper.registerModule(new GuavaModule());
     objectMapper.registerModule(new JavaTimeModule());
     objectMapper.registerModule(new Jdk8Module());
   }

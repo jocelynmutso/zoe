@@ -1,10 +1,13 @@
 package io.github.jocelynmutso.zoe.persistence.spi.builders;
 
-import com.sun.source.doctree.EntityTree;
+import java.util.stream.Collectors;
 
-import io.github.jocelynmutso.zoe.persistence.api.SaveException;
 import io.github.jocelynmutso.zoe.persistence.api.DeleteBuilder;
 import io.github.jocelynmutso.zoe.persistence.api.DeleteException;
+import io.github.jocelynmutso.zoe.persistence.api.ImmutableEntity;
+import io.github.jocelynmutso.zoe.persistence.api.ImmutableLink;
+import io.github.jocelynmutso.zoe.persistence.api.ImmutableWorkflow;
+import io.github.jocelynmutso.zoe.persistence.api.SaveException;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Article;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Entity;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.EntityType;
@@ -183,14 +186,85 @@ public class DeleteBuilderImpl implements DeleteBuilder {
   @SuppressWarnings("unchecked")
   @Override
   public Uni<Entity<Link>> linkArticlePage(LinkArticlePage linkArticlePage) {
-    // TODO Auto-generated method stub
-    return null;
+    return config.getClient()
+        .objects().blobState()
+        .repo(config.getRepoName())
+        .anyId(config.getHeadName())
+        .blobName(linkArticlePage.getLinkId())
+        .build()
+        .onItem().transformToUni(state -> {
+          if(state.getStatus() == ObjectsStatus.OK) {
+            Entity<Link> start = (Entity<Link>) config.getDeserializer()
+                .fromString(EntityType.LINK, state.getObjects().getBlob().getValue());
+            
+            var newArticles = start.getBody()
+                .getArticles().stream().filter(a -> a.equals(linkArticlePage.getArticleId()))
+                .collect(Collectors.toList());
+            
+            Entity<Link> end = ImmutableEntity.<Link>builder()
+              .id(start.getId()).type(start.getType())
+              .body(ImmutableLink.builder().from(start.getBody())
+                  .articles(newArticles)
+                  .build())
+              .build();
+
+            return config.getClient().commit().head()
+                .head(config.getRepoName(), config.getHeadName())
+                .message("delete-article-link: " + linkArticlePage)
+                .parentIsLatest()
+                .author(config.getAuthorProvider().getAuthor())
+                .append(linkArticlePage.getArticleId(), config.getSerializer().toString(end))
+                .build().onItem().transform(commit -> {
+                  if(commit.getStatus() == CommitStatus.OK) {
+                    return end;
+                  }
+                  throw new SaveException(start, commit);
+                });
+          }
+          throw new DeleteException(linkArticlePage.getArticleId(), EntityType.ARTICLE, state);
+        });
   }
 
+  @SuppressWarnings("unchecked")
   @Override
   public Uni<Entity<Workflow>> workflowArticlePage(WorkflowArticlePage workflowArticlePage) {
-    // TODO Auto-generated method stub
-    return null;
+    return config.getClient()
+        .objects().blobState()
+        .repo(config.getRepoName())
+        .anyId(config.getHeadName())
+        .blobName(workflowArticlePage.getWorkflowId())
+        .build()
+        .onItem().transformToUni(state -> {
+          if(state.getStatus() == ObjectsStatus.OK) {
+            Entity<Workflow> start = (Entity<Workflow>) config.getDeserializer()
+                .fromString(EntityType.WORKFLOW, state.getObjects().getBlob().getValue());
+            
+            var newArticles = start.getBody()
+                .getArticles().stream().filter(a -> a.equals(workflowArticlePage.getArticleId()))
+                .collect(Collectors.toList());
+            
+            Entity<Workflow> end = ImmutableEntity.<Workflow>builder()
+              .id(start.getId()).type(start.getType())
+              .body(ImmutableWorkflow.builder().from(start.getBody())
+                  .articles(newArticles)
+                  .build())
+              .build();
+
+            return config.getClient().commit().head()
+                .head(config.getRepoName(), config.getHeadName())
+                .message("delete-article-workflow: " + workflowArticlePage)
+                .parentIsLatest()
+                .author(config.getAuthorProvider().getAuthor())
+                .append(workflowArticlePage.getArticleId(), config.getSerializer().toString(end))
+                .build().onItem().transform(commit -> {
+                  if(commit.getStatus() == CommitStatus.OK) {
+                    return end;
+                  }
+                  throw new SaveException(start, commit);
+                });
+          }
+          throw new DeleteException(workflowArticlePage.getArticleId(), EntityType.ARTICLE, state);
+        });
   }
   
 }
