@@ -11,6 +11,7 @@ import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateLink;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateLocale;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreatePage;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateRelease;
+import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateWorkflow;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableLocale;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Article;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Entity;
@@ -56,6 +57,10 @@ public class PersistenceTest extends MongoDbConfig {
     
     repo.create().link(
         ImmutableCreateLink.builder().type("internal").locale("en").description("click me").value("www.example.com").build()
+      ).await().atMost(Duration.ofMinutes(1));
+    
+    repo.create().workflow( 
+        ImmutableCreateWorkflow.builder().name("Form1").locale("en").content("firstForm").build()
       ).await().atMost(Duration.ofMinutes(1));
     
     super.prettyPrint("test1");

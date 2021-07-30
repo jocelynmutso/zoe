@@ -146,28 +146,32 @@ public class CreateBuilderImpl implements CreateBuilder {
 
   @Override
   public Uni<Entity<Link>> link(CreateLink init) {
-      final var gid = gid(EntityType.LINK);
-      final var link = ImmutableLink.builder()
-        .description(init.getDescription())
-        .locale(init.getLocale())
-        .type(init.getType())
-        .content(init.getValue())
-        .build();
-      
-      final Entity<Link> entity = ImmutableEntity.<Link>builder()
-        .id(gid)
-        .type(EntityType.PAGE)
-        .body(link)
-        .build();
+    final var gid = gid(EntityType.LINK);
+    final var link = ImmutableLink.builder()
+      .description(init.getDescription())
+      .locale(init.getLocale())
+      .type(init.getType())
+      .content(init.getValue())
+      .build();
     
-      return config.getClient().commit().head()
-        .head(config.getRepoName(), config.getHeadName())
-        .message("creating-link")
-        .author(config.getAuthorProvider().getAuthor())
-        .append(gid, config.getSerializer().toString(entity))
-        .build().onItem().transform(commit -> {
+    final Entity<Link> entity = ImmutableEntity.<Link>builder()
+      .id(gid)
+      .type(EntityType.LINK)
+      .body(link)
+      .build();
+  
+    return config.getClient().commit().head()
+      .head(config.getRepoName(), config.getHeadName())
+      .message("creating-link")
+      .parentIsLatest()
+      .author(config.getAuthorProvider().getAuthor())
+      .append(gid, config.getSerializer().toString(entity))
+      .build().onItem().transform(commit -> {
+        if(commit.getStatus() == CommitStatus.OK) {
           return entity;
-        });
+        }
+        throw new CreateException(entity, commit);
+      });
   }
 
   @Override
@@ -188,6 +192,7 @@ public class CreateBuilderImpl implements CreateBuilder {
       return config.getClient().commit().head()
           .head(config.getRepoName(), config.getHeadName())
           .message("creating-workflow")
+          .parentIsLatest()
           .author(config.getAuthorProvider().getAuthor())
           .append(gid, config.getSerializer().toString(entity))
           .build().onItem().transform(commit -> {
