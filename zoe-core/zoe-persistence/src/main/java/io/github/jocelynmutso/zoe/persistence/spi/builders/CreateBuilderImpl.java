@@ -185,7 +185,7 @@ public class CreateBuilderImpl implements CreateBuilder {
       
       final Entity<Workflow> entity = ImmutableEntity.<Workflow>builder()
           .id(gid)
-          .type(EntityType.PAGE)
+          .type(EntityType.WORKFLOW)
           .body(workflow)
           .build();
       

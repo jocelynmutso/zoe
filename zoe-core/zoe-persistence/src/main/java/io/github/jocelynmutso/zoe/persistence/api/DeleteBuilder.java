@@ -25,14 +25,12 @@ public interface DeleteBuilder {
   interface LinkArticlePage {
     String getLinkId(); 
     String getArticleId();
-    String getLocale();
   }
   
   @Value.Immutable
   interface WorkflowArticlePage {
     String getWorkflowId();
     String getArticleId();
-    String getLocale();
   }
 
 }

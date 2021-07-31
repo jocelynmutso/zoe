@@ -8,11 +8,13 @@ import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Link;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Locale;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Page;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Workflow;
+import io.smallrye.mutiny.Uni;
 
 public interface UpdateBuilder {
   
+  Uni<Entity<Article>> article(ArticleMutator changes);
+  
   Entity<Locale> locale(LocaleMutator changes);
-  Entity<Article> article(ArticleMutator changes);
   Entity<Page> page(PageMutator changes);
   Entity<Link> link(LinkMutator changes);
   Entity<Workflow> workflow(WorkflowMutator changes);

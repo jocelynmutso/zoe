@@ -59,6 +59,7 @@ import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Page;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Release;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Workflow;
 import io.github.jocelynmutso.zoe.persistence.spi.ZoePersistenceImpl;
+import io.github.jocelynmutso.zoe.persistence.spi.serializers.ZoeDeserializer;
 import io.quarkus.mongodb.impl.ReactiveMongoClientImpl;
 import io.quarkus.mongodb.reactive.ReactiveMongoClient;
 import io.resys.thena.docdb.api.DocDB;
@@ -165,40 +166,14 @@ public abstract class MongoDbConfig {
     
     final AtomicInteger gid = new AtomicInteger(0);
     
+    ZoeDeserializer deserializer = new ZoeDeserializer(objectMapper);
+    
     return ZoePersistenceImpl.builder()
         .config((builder) -> builder
             .client(client)
             .repoName(repoId)
             .headName("zoe-main")
-            .deserializer((entityType, value) -> {
-              try {
-
-                switch(entityType) {
-                  case ARTICLE: {
-                    return objectMapper.readValue(value, new TypeReference<Entity<Article>>() {});  
-                  }
-                  case LINK: {
-                    return objectMapper.readValue(value, new TypeReference<Entity<Link>>() {});  
-                  }
-                  case LOCALE: {
-                    return objectMapper.readValue(value, new TypeReference<Entity<Locale>>() {});  
-                  }
-                  case PAGE: {
-                    return objectMapper.readValue(value, new TypeReference<Entity<Page>>() {});  
-                  }
-                  case RELEASE: {
-                    return objectMapper.readValue(value, new TypeReference<Entity<Release>>() {});  
-                  }
-                  case WORKFLOW: {
-                    return objectMapper.readValue(value, new TypeReference<Entity<Workflow>>() {});  
-                  }
-                  default: throw new RuntimeException("can't map: " + entityType);
-                }
-                
-              } catch (IOException e) {
-                throw new RuntimeException(e.getMessage(), e);
-              }
-            })
+            .deserializer(deserializer)
             .serializer((entity) -> {
               try {
                 return objectMapper.writeValueAsString(entity);
