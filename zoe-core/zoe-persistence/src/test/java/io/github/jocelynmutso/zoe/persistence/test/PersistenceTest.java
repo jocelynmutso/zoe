@@ -4,6 +4,7 @@ import java.time.Duration;
 
 import org.junit.jupiter.api.Test;
 
+import io.github.jocelynmutso.zoe.persistence.api.ImmutableArticleMutator;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateArticle;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateLink;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateLocale;
@@ -63,6 +64,10 @@ public class PersistenceTest extends MongoDbConfig {
         ImmutableCreateWorkflow.builder().name("Form1").locale("en").content("firstForm").build()
       ).await().atMost(Duration.ofMinutes(1));
     
+    
+    repo.update().article(ImmutableArticleMutator.builder().articleId(article1.getId()).name("Revised Article1").order(300).build())
+    .await().atMost(Duration.ofMinutes(1));
+    
     super.prettyPrint("test1");
     
     repo.delete().article(article1.getId())
@@ -82,7 +87,7 @@ public class PersistenceTest extends MongoDbConfig {
     
     repo.delete().workflow(workflow1.getId())
     .await().atMost(Duration.ofMinutes(1));
-      
+    
     super.prettyPrint("test1");
   }
 

@@ -2,6 +2,8 @@ package io.github.jocelynmutso.zoe.persistence.api;
 
 import java.util.Optional;
 
+import org.immutables.value.Value;
+
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Article;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Entity;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Link;
@@ -25,6 +27,7 @@ public interface UpdateBuilder {
     Boolean getEnabled();
   }
   
+  @Value.Immutable
   interface ArticleMutator {
     String getArticleId();
     Optional<String> getParentId();
