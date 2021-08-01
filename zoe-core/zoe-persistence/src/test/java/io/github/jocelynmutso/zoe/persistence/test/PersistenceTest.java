@@ -1,6 +1,7 @@
 package io.github.jocelynmutso.zoe.persistence.test;
 
 import java.time.Duration;
+import java.util.Arrays;
 
 import org.junit.jupiter.api.Test;
 
@@ -78,7 +79,7 @@ public class PersistenceTest extends MongoDbConfig {
     repo.update().page(ImmutablePageMutator.builder().pageId(page1.getId()).content("new content for page1").locale("fi").build())
     .await().atMost(Duration.ofMinutes(1));
     
-    repo.update().link(ImmutableLinkMutator.builder().linkId(link1.getId()).description("Don't click me").locale("sv").content("www.wikipedia.com").type("external").build())
+    repo.update().link(ImmutableLinkMutator.builder().linkId(link1.getId()).articles(Arrays.asList("A1")).description("Don't click me").locale("sv").content("www.wikipedia.com").type("external").build())
     .await().atMost(Duration.ofMinutes(1));
     
     repo.update().workflow(ImmutableWorkflowMutator.builder().workflowId(workflow1.getId()).content("revision of firstForm").locale("sv").name("First form part 2").build())

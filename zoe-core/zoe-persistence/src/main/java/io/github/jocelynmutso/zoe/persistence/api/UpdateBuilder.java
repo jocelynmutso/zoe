@@ -48,6 +48,7 @@ public interface UpdateBuilder {
     String getLocale(); 
     String getDescription();
     String getType();
+    List<String> getArticles();
   }
   @Value.Immutable
   interface WorkflowMutator {

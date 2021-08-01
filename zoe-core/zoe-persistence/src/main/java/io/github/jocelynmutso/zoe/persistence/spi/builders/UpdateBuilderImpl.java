@@ -103,6 +103,7 @@ public class UpdateBuilderImpl extends PersistenceCommands implements UpdateBuil
             .description(changes.getDescription())
             .locale(changes.getLocale())
             .type(changes.getType())
+            .articles(changes.getArticles())
             .build())
         .build();
   }
