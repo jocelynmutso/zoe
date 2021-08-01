@@ -11,6 +11,10 @@ import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateLocale;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreatePage;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateRelease;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateWorkflow;
+import io.github.jocelynmutso.zoe.persistence.api.ImmutableLinkMutator;
+import io.github.jocelynmutso.zoe.persistence.api.ImmutableLocaleMutator;
+import io.github.jocelynmutso.zoe.persistence.api.ImmutablePageMutator;
+import io.github.jocelynmutso.zoe.persistence.api.ImmutableWorkflowMutator;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Article;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Entity;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Link;
@@ -66,6 +70,18 @@ public class PersistenceTest extends MongoDbConfig {
     
     
     repo.update().article(ImmutableArticleMutator.builder().articleId(article1.getId()).name("Revised Article1").order(300).build())
+    .await().atMost(Duration.ofMinutes(1));
+    
+    repo.update().locale(ImmutableLocaleMutator.builder().localeId(locale1.getId()).value("fi").enabled(false).build())
+    .await().atMost(Duration.ofMinutes(1));
+    
+    repo.update().page(ImmutablePageMutator.builder().pageId(page1.getId()).content("new content for page1").locale("fi").build())
+    .await().atMost(Duration.ofMinutes(1));
+    
+    repo.update().link(ImmutableLinkMutator.builder().linkId(link1.getId()).description("Don't click me").locale("sv").content("www.wikipedia.com").type("external").build())
+    .await().atMost(Duration.ofMinutes(1));
+    
+    repo.update().workflow(ImmutableWorkflowMutator.builder().workflowId(workflow1.getId()).content("revision of firstForm").locale("sv").name("First form part 2").build())
     .await().atMost(Duration.ofMinutes(1));
     
     super.prettyPrint("test1");

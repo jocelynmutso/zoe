@@ -1,11 +1,11 @@
 [
   {
-    "id": "P1234",
-    "type": "page",
+    "id": "PAGE-6",
+    "type": "PAGE",
     "body": {
-      "article": "877576465354",
+      "article": "PAGE-6",
       "locale": "fi",
-      "content": "# markdown content"
+      "content": "new content for page1"
     }
   },
   {

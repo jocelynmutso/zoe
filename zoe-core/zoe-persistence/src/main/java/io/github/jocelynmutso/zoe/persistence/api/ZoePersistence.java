@@ -51,15 +51,6 @@ public interface ZoePersistence {
     Integer getOrder();
   }
   
-  @Value.Immutable
-  @JsonSerialize(as = ImmutablePage.class)
-  @JsonDeserialize(as = ImmutablePage.class)
-  interface Page extends EntityBody {
-    String getArticle();
-    String getLocale();
-    String getContent();
-    
-  }
   
   @Value.Immutable
   @JsonSerialize(as = ImmutableLocale.class)
@@ -67,6 +58,15 @@ public interface ZoePersistence {
   interface Locale extends EntityBody {
     String getValue();
    // Boolean getEnabled();
+  }
+  
+  @Value.Immutable
+  @JsonSerialize(as = ImmutablePage.class)
+  @JsonDeserialize(as = ImmutablePage.class)
+  interface Page extends EntityBody {
+    String getArticle();
+    String getLocale();
+    String getContent();
   }
   
   @Value.Immutable
