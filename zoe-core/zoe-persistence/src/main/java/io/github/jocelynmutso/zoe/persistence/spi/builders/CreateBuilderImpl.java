@@ -1,5 +1,7 @@
 package io.github.jocelynmutso.zoe.persistence.spi.builders;
 
+import java.util.Optional;
+
 /*-
  * #%L
  * zoe-persistence
@@ -21,7 +23,6 @@ package io.github.jocelynmutso.zoe.persistence.spi.builders;
  */
 
 import io.github.jocelynmutso.zoe.persistence.api.CreateBuilder;
-import io.github.jocelynmutso.zoe.persistence.api.SaveException;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableArticle;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableEntity;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableLink;
@@ -29,6 +30,7 @@ import io.github.jocelynmutso.zoe.persistence.api.ImmutableLocale;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutablePage;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableRelease;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableWorkflow;
+import io.github.jocelynmutso.zoe.persistence.api.SaveException;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Article;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Entity;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.EntityType;
@@ -57,7 +59,7 @@ public class CreateBuilderImpl implements CreateBuilder {
     final var article = ImmutableArticle.builder()
         .name(init.getName())
         .parentId(init.getParentId())
-        .order(init.getOrder().orElse(0))
+        .order(Optional.ofNullable(init.getOrder()).orElse(0))
         .build();
     final Entity<Article> entity = ImmutableEntity.<Article>builder()
         .id(gid)
@@ -85,7 +87,7 @@ public class CreateBuilderImpl implements CreateBuilder {
     
     final var release = ImmutableRelease.builder()
         .name(init.getName())
-        .note(init.getNote().orElse(""))
+        .note(Optional.ofNullable(init.getNote()).orElse(""))
         .build();
 
     final Entity<Release> entity = ImmutableEntity.<Release>builder()
@@ -141,7 +143,7 @@ public class CreateBuilderImpl implements CreateBuilder {
     final var page = ImmutablePage.builder()
         .article(init.getArticleId())
         .locale(init.getLocale())
-        .content(init.getContent().orElse(""))
+        .content(Optional.ofNullable(init.getContent()).orElse(""))
         .build();
     
     final Entity<Page> entity = ImmutableEntity.<Page>builder()

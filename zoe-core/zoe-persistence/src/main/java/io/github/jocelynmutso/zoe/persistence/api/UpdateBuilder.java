@@ -21,9 +21,13 @@ package io.github.jocelynmutso.zoe.persistence.api;
  */
 
 import java.util.List;
-import java.util.Optional;
+
+import javax.annotation.Nullable;
 
 import org.immutables.value.Value;
+
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Article;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Entity;
@@ -42,6 +46,8 @@ public interface UpdateBuilder {
   Uni<Entity<Workflow>> workflow(WorkflowMutator changes);
 
   @Value.Immutable
+  @JsonSerialize(as = ImmutableLocaleMutator.class)
+  @JsonDeserialize(as = ImmutableLocaleMutator.class)
   interface LocaleMutator {
     String getLocaleId(); 
     String getValue();
@@ -49,19 +55,26 @@ public interface UpdateBuilder {
   }
   
   @Value.Immutable
+  @JsonSerialize(as = ImmutableArticleMutator.class)
+  @JsonDeserialize(as = ImmutableArticleMutator.class)
   interface ArticleMutator {
     String getArticleId();
-    Optional<String> getParentId();
+    @Nullable
+    String getParentId();
     String getName();
     Integer getOrder();
   }
   @Value.Immutable
+  @JsonSerialize(as = ImmutablePageMutator.class)
+  @JsonDeserialize(as = ImmutablePageMutator.class)
   interface PageMutator {
     String getPageId();
     String getContent();
     String getLocale();
   }
   @Value.Immutable
+  @JsonSerialize(as = ImmutableLinkMutator.class)
+  @JsonDeserialize(as = ImmutableLinkMutator.class)
   interface LinkMutator {
     String getLinkId();
     String getContent(); 
@@ -71,6 +84,8 @@ public interface UpdateBuilder {
     List<String> getArticles();
   }
   @Value.Immutable
+  @JsonSerialize(as = ImmutableWorkflowMutator.class)
+  @JsonDeserialize(as = ImmutableWorkflowMutator.class)
   interface WorkflowMutator {
     String getWorkflowId(); 
     String getName(); 

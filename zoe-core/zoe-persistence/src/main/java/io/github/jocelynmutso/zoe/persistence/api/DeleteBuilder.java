@@ -22,6 +22,9 @@ package io.github.jocelynmutso.zoe.persistence.api;
 
 import org.immutables.value.Value;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Article;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Entity;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Link;
@@ -42,12 +45,16 @@ public interface DeleteBuilder {
 
   
   @Value.Immutable
+  @JsonSerialize(as = ImmutableLinkArticlePage.class)
+  @JsonDeserialize(as = ImmutableLinkArticlePage.class)
   interface LinkArticlePage {
     String getLinkId(); 
     String getArticleId();
   }
   
   @Value.Immutable
+  @JsonSerialize(as = ImmutableWorkflowArticlePage.class)
+  @JsonDeserialize(as = ImmutableWorkflowArticlePage.class)
   interface WorkflowArticlePage {
     String getWorkflowId();
     String getArticleId();

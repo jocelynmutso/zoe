@@ -120,12 +120,12 @@ public class ArticleDeleteVisitor {
   
   public Optional<Entity<?>> visitArticle(Entity<Article> start) {
     
-    if(start.getBody().getParentId().isPresent() && 
-        start.getBody().getParentId().get().equals(articleId)) {
+    if(start.getBody().getParentId() != null  && 
+        start.getBody().getParentId().equals(articleId)) {
       return Optional.of(ImmutableEntity.<Article>builder()
           .id(start.getId()).type(start.getType())
           .body(ImmutableArticle.builder().from(start.getBody())
-              .parentId(Optional.empty())
+              .parentId(null)
               .build())
           .build());
     }

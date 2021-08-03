@@ -22,7 +22,8 @@ package io.github.jocelynmutso.zoe.persistence.api;
 
 import java.io.Serializable;
 import java.util.List;
-import java.util.Optional;
+
+import javax.annotation.Nullable;
 
 import org.immutables.value.Value;
 
@@ -66,7 +67,8 @@ public interface ZoePersistence {
   @JsonSerialize(as = ImmutableArticle.class)
   @JsonDeserialize(as = ImmutableArticle.class)
   interface Article extends EntityBody {
-    Optional<String> getParentId();
+    @Nullable
+    String getParentId();
     String getName();
     Integer getOrder();
   }
