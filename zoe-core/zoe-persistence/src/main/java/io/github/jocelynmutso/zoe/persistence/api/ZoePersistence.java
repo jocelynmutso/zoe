@@ -31,11 +31,18 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 public interface ZoePersistence {
-  
+
   CreateBuilder create();
   UpdateBuilder update();
   DeleteBuilder delete();
- 
+  
+  @Value.Immutable
+  @JsonSerialize(as = ImmutableEntityRepo.class)
+  @JsonDeserialize(as = ImmutableEntityRepo.class)
+  interface EntityRepo {
+    String getName(); 
+  }
+  
   @Value.Immutable
   @JsonSerialize(as = ImmutableEntity.class)
   @JsonDeserialize(as = ImmutableEntity.class)

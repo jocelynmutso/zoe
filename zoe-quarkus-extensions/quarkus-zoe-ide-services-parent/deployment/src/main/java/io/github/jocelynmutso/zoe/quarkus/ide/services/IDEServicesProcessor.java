@@ -9,6 +9,7 @@ import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreatePage;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateRelease;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateWorkflow;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableEntity;
+import io.github.jocelynmutso.zoe.persistence.api.ImmutableEntityRepo;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableLink;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableLinkArticlePage;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableLinkMutator;
@@ -105,7 +106,8 @@ public class IDEServicesProcessor {
   
   @BuildStep
   public ReflectiveClassBuildItem reflection() {
-    return new ReflectiveClassBuildItem(true, true, 
+    return new ReflectiveClassBuildItem(true, true,
+        ImmutableEntityRepo.class,
         ImmutableArticle.class,
         ImmutableArticleMutator.class,
         ImmutableCreateArticle.class,

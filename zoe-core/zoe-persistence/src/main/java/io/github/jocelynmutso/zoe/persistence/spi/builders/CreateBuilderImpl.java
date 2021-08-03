@@ -25,14 +25,17 @@ import java.util.Optional;
 import io.github.jocelynmutso.zoe.persistence.api.CreateBuilder;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableArticle;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableEntity;
+import io.github.jocelynmutso.zoe.persistence.api.ImmutableEntityRepo;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableLink;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableLocale;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutablePage;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableRelease;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableWorkflow;
+import io.github.jocelynmutso.zoe.persistence.api.RepoException;
 import io.github.jocelynmutso.zoe.persistence.api.SaveException;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Article;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Entity;
+import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.EntityRepo;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.EntityType;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Link;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Locale;
@@ -41,6 +44,7 @@ import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Release;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Workflow;
 import io.github.jocelynmutso.zoe.persistence.spi.PersistenceConfig;
 import io.resys.thena.docdb.api.actions.CommitActions.CommitStatus;
+import io.resys.thena.docdb.api.actions.RepoActions.RepoStatus;
 import io.smallrye.mutiny.Uni;
 
 
@@ -227,5 +231,17 @@ public class CreateBuilderImpl implements CreateBuilder {
   
   private String gid(EntityType type) {
     return config.getGidProvider().getNextId(type);
+  }
+
+  @Override
+  public Uni<EntityRepo> repo() {
+    return config.getClient().repo().create()
+        .name(config.getRepoName())
+        .build().onItem().transform(repoResult -> {
+          if(repoResult.getStatus() == RepoStatus.OK) {
+            return ImmutableEntityRepo.builder().name(repoResult.getRepo().getName()).build();
+          }
+          throw new RepoException("Can't create repository with name: '"  + config.getRepoName() + "'!", repoResult);
+        });
   }
 }

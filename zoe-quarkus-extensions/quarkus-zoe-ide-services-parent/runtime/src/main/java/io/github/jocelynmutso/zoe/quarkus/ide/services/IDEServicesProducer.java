@@ -62,10 +62,11 @@ public class IDEServicesProducer {
         .applyConnectionString(new ConnectionString(runtimeConfig.db.connectionUrl))
         .build()));
     
+    final var docDb = DocDBFactory.create().db(runtimeConfig.db.dbName).client(mongo).build();
     final var deserializer = new ZoeDeserializer(objectMapper);
     final var client = ZoePersistenceImpl.builder()
         .config((builder) -> builder
-            .client(DocDBFactory.create().db(runtimeConfig.db.dbName).client(mongo).build())
+            .client(docDb)
             .repoName(runtimeConfig.repo.repoName)
             .headName(runtimeConfig.repo.headName)
             .deserializer(deserializer)
@@ -80,6 +81,8 @@ public class IDEServicesProducer {
             .authorProvider(() -> "no-author"))
         .build();
     
+    
+    // create repo if not present
     return new IDEServicesContext(client, paths);
   }
   

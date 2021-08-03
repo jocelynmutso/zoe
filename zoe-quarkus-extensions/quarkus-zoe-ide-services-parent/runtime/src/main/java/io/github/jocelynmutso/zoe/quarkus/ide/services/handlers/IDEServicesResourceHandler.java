@@ -25,7 +25,16 @@ public class IDEServicesResourceHandler extends HdesResourceHandler {
     response.headers().set(HttpHeaders.CONTENT_TYPE, "application/json; charset=UTF-8");
     final var path = event.normalisedPath();
 
-    if (path.startsWith(ctx.getPaths().getArticlesPath())) {
+    if(path.endsWith(ctx.getPaths().getServicePath())) {
+      if (event.request().method() == HttpMethod.POST) {
+        ctx.getClient()
+        .create().repo()
+        .onItem().transform(data -> JsonObject.mapFrom(data).toBuffer())
+        .onFailure().invoke(e -> catch422(e, ctx, response))
+        .subscribe().with(data -> response.end(data)); 
+      }
+      
+    } else if (path.startsWith(ctx.getPaths().getArticlesPath())) {
       
       // articles
       

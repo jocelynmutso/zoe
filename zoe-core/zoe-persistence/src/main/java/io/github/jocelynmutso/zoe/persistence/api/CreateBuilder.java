@@ -13,18 +13,20 @@ import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Link;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Locale;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Page;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Release;
+import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.EntityRepo;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Workflow;
 import io.smallrye.mutiny.Uni;
 
 public interface CreateBuilder {
   
+  Uni<EntityRepo> repo();
   Uni<Entity<Article>> article(CreateArticle init);
   Uni<Entity<Release>> release(CreateRelease init);
   Uni<Entity<Locale>> locale(CreateLocale init);
   Uni<Entity<Page>> page(CreatePage init);
   Uni<Entity<Link>> link(CreateLink init);
   Uni<Entity<Workflow>> workflow(CreateWorkflow init);
-
+  
   
   @Value.Immutable
   @JsonSerialize(as = ImmutableCreateArticle.class)

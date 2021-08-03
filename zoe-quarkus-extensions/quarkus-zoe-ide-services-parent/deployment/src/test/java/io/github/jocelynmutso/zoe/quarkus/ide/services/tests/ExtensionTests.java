@@ -46,6 +46,10 @@ public class ExtensionTests extends MongoDbConfig {
   
   @Test
   public void postArticles() {
+
+    RestAssured.given()
+    .when().post("/zoe-ide-services")
+    .then().statusCode(200);
     
     RestAssured.given()
       .body(JsonObject.mapFrom(ImmutableCreateArticle.builder()
