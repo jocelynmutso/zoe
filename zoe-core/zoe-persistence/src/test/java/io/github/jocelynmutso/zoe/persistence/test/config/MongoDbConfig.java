@@ -21,10 +21,12 @@ package io.github.jocelynmutso.zoe.persistence.test.config;
  */
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import org.apache.commons.io.IOUtils;
 import org.bson.codecs.DocumentCodecProvider;
 import org.bson.codecs.ValueCodecProvider;
 import org.bson.codecs.configuration.CodecRegistry;
@@ -33,7 +35,6 @@ import org.bson.internal.ProvidersCodecRegistry;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
@@ -51,13 +52,6 @@ import de.flapdoodle.embed.mongo.config.Net;
 import de.flapdoodle.embed.mongo.distribution.Version;
 import de.flapdoodle.embed.process.runtime.Network;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence;
-import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Article;
-import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Entity;
-import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Link;
-import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Locale;
-import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Page;
-import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Release;
-import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Workflow;
 import io.github.jocelynmutso.zoe.persistence.spi.ZoePersistenceImpl;
 import io.github.jocelynmutso.zoe.persistence.spi.serializers.ZoeDeserializer;
 import io.quarkus.mongodb.impl.ReactiveMongoClientImpl;
@@ -70,6 +64,7 @@ import io.resys.thena.docdb.spi.ClientState;
 import io.resys.thena.docdb.spi.DocDBCodecProvider;
 import io.resys.thena.docdb.spi.DocDBFactory;
 import io.resys.thena.docdb.spi.DocDBPrettyPrinter;
+import io.resys.thena.docdb.spi.DocDBTestPrinter;
 
 public abstract class MongoDbConfig {
   private static final MongodStarter starter = MongodStarter.getDefaultInstance();
@@ -155,6 +150,15 @@ public abstract class MongoDbConfig {
     printRepo(repo);
   }
 
+  public String toRepoExport(String repoId) {
+    Repo repo = getClient().repo().query().id(repoId).get()
+        .await().atMost(Duration.ofMinutes(1));
+    final String result = new DocDBTestPrinter(createState()).print(repo);
+    return result;
+  }
+
+  
+  
   public ZoePersistence getPersistence(String repoId) {
     final DocDB client = getClient();
     
@@ -187,5 +191,13 @@ public abstract class MongoDbConfig {
             .authorProvider(() -> "junit-test"))
             
         .build();
+  }
+  
+  public static String toString(Class<?> type, String resource) {
+    try {
+      return IOUtils.toString(type.getClassLoader().getResource(resource), StandardCharsets.UTF_8);
+    } catch (IOException e) {
+      throw new RuntimeException(e.getMessage(), e);
+    }
   }
 }

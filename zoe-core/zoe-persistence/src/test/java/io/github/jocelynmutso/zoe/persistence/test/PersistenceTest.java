@@ -23,6 +23,7 @@ package io.github.jocelynmutso.zoe.persistence.test;
 import java.time.Duration;
 import java.util.Arrays;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableArticleMutator;
@@ -89,6 +90,10 @@ public class PersistenceTest extends MongoDbConfig {
         ImmutableCreateWorkflow.builder().name("Form1").locale("en").content("firstForm").build()
       ).await().atMost(Duration.ofMinutes(1));
     
+    // create state
+    var expected = super.toString(getClass(), "create_state.txt");
+    var actual = super.toRepoExport("test1");
+    Assertions.assertEquals(expected, actual);
     
     repo.update().article(ImmutableArticleMutator.builder().articleId(article1.getId()).name("Revised Article1").order(300).build())
     .await().atMost(Duration.ofMinutes(1));
@@ -105,7 +110,12 @@ public class PersistenceTest extends MongoDbConfig {
     repo.update().workflow(ImmutableWorkflowMutator.builder().workflowId(workflow1.getId()).content("revision of firstForm").locale("sv").name("First form part 2").build())
     .await().atMost(Duration.ofMinutes(1));
     
-    super.prettyPrint("test1");
+    
+    // update state
+    expected = super.toString(getClass(), "update_state.txt");
+    actual = super.toRepoExport("test1");
+    Assertions.assertEquals(expected, actual);
+    
     
     repo.delete().article(article1.getId())
     .await().atMost(Duration.ofMinutes(1));
@@ -125,7 +135,11 @@ public class PersistenceTest extends MongoDbConfig {
     repo.delete().workflow(workflow1.getId())
     .await().atMost(Duration.ofMinutes(1));
     
-    super.prettyPrint("test1");
+    // delete state
+    expected = super.toString(getClass(), "delete_state.txt");
+    actual = super.toRepoExport("test1");
+    Assertions.assertEquals(expected, actual);
+    
   }
 
 }
