@@ -1,5 +1,5 @@
 {
-  "name": "zoe-ide",
+  "name": "zoe-ide-integration",
   "version": "0.1.0",
   "private": true,
   "homepage": "/portal",
@@ -16,7 +16,7 @@
     "react-intl": "^5.20.2",
     "react-scripts": "4.0.3",
     "typescript": "^4.3.2",
-    "zoe-ide": "^0.1.1"
+    "zoe-ide": "^0.1.4"
   },
   "scripts": {
     "start": "react-scripts start",

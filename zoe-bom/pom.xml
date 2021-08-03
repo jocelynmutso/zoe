@@ -14,7 +14,12 @@
     <dependencies>
       <dependency>
         <groupId>io.github.jocelynmutso</groupId>
-        <artifactId>zoe-ide</artifactId>
+        <artifactId>zoe-ide-integration</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.github.jocelynmutso</groupId>
+        <artifactId>zoe-persistence</artifactId>
         <version>${project.version}</version>
       </dependency>
       <dependency>
@@ -26,6 +31,11 @@
       <dependency>
         <groupId>io.github.jocelynmutso</groupId>
         <artifactId>quarkus-zoe-ide</artifactId>
+        <version>${project.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.github.jocelynmutso</groupId>
+        <artifactId>quarkus-zoe-ide-services</artifactId>
         <version>${project.version}</version>
       </dependency>
     </dependencies>

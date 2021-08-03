@@ -13,8 +13,9 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>zoe-ide</module>
+    <module>zoe-ide-integration</module>
     <module>zoe-ide-services</module>
+    <module>zoe-persistence</module>
   </modules>
 
 </project>

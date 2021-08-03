@@ -55,7 +55,7 @@ import io.vertx.ext.web.RoutingContext;
 
 public class FrontendProcessor {
   private static final String WEBJAR_GROUP_ID = "io.github.jocelynmutso";
-  private static final String WEBJAR_ARTIFACT_ID = "zoe-ide";
+  private static final String WEBJAR_ARTIFACT_ID = "zoe-ide-integration";
   private static final String WEBJAR_PREFIX = "META-INF/resources/webjars/" + WEBJAR_ARTIFACT_ID + "/";
   private static final String FINAL_DESTINATION = "META-INF/portal-files";
   public static final String FEATURE_BUILD_ITEM = "zoe-ide";
