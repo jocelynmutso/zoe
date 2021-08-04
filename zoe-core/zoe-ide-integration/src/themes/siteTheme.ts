@@ -5,38 +5,44 @@ import { PaletteOptions } from '@material-ui/core/styles/createPalette';
 
 const palette = {
   type: 'light',
-  primary: {
-    main: '#078299',
-    contrastText: '#2f3131',
-    dark: '#078299',
-    light: '#edf0f2',
-  },
-  secondary: {
-    main: '#078299',
-    light: 'rgba(7,130,153, 0.25)',
-    dark: 'rgb(217,227,230)', //darker blue for under header
-    contrastText: '#ffffff',
-  },
-  background: {
-    paper: '#fefefe',
-  },
-  text: {
-    main: '#000000',
-    dark: '#066474', //dark variant of primary.main
-    light: 'ffffff',
-    hint: 'rgba(125,73,73,0.38)',
-  },
-  success: {
-    main: '#005fcc',
-  },
-  action: {
-    main: '#f28d00' //orange
-  },
-  info: {
-    main: "#f28d00", //orange
-  }
-};
 
+    primary: {
+      main: '#1a237e',
+      contrastText: '#fff',
+      dark: '#000051',
+      light: '#534bae',
+    },
+    secondary: {
+      main: '#c51162',
+      light: '#fd558f',
+      dark: '#8e0038',
+      contrastText: '#fff'
+    },
+    error: {
+      main: '#e53935',
+    },
+    info: {
+      main: '#9b39dc',
+      light: '#d06cff',
+      dark: '#6700a9',
+    },
+    warning: {
+      main: '#ff9800',
+      light: '#ffac33',
+      dark: '#b26a00',
+      contrastText: '#000001',
+    },
+    success: {
+      main: '#4caf50',
+    },
+    text: {
+      primary: 'rgba(0,0,0,0.86)',
+      secondary: 'rgba(0,0,0,0.55)',
+      disabled: 'rgba(0,0,0,0.36)',
+      hint: 'rgba(0,0,0,0.37)',
+    },
+  
+}
 
 const siteTheme = createMuiTheme({
   palette: palette as PaletteOptions,
@@ -48,7 +54,6 @@ const siteTheme = createMuiTheme({
       lineHeight: 2,
       fontFamily: "'Open Sans', sans-serif",
       fontWeight: 600,
-      color: palette.primary.contrastText
     },
     h2: {
       fontSize: "1.9rem",
@@ -57,7 +62,6 @@ const siteTheme = createMuiTheme({
       fontWeight: 400,
       paddingTop: 15,
       paddingBottom: 15,
-      color: palette.primary.contrastText,
     },
     h3: {
       fontSize: "1.6rem",
@@ -66,8 +70,6 @@ const siteTheme = createMuiTheme({
       fontWeight: 300,
       paddingTop: 15,
       paddingBottom: 15,
-      color: palette.primary.contrastText,
-
     },
     h4: {
       fontSize: "1.3rem",
@@ -95,6 +97,11 @@ const siteTheme = createMuiTheme({
   },
   overrides: {
 
+    MuiCardActions: {
+      root: {
+        
+      }
+    },
     MuiListItem: {
       root: {
         paddingTop: 0,
@@ -103,8 +110,14 @@ const siteTheme = createMuiTheme({
     },
 
     MuiListItemText: {
+      root: {
+        paddingTop: 0,
+        paddingBottom: 0,
+        marginTop: 0,
+        marginBottom: 0,
+      },
       primary: {
-        color: palette.text.main,
+        //color: palette.text.main,
         "&:hover": {
           color: palette.primary.dark,
           fontWeight: 'bold',
@@ -113,7 +126,7 @@ const siteTheme = createMuiTheme({
 
       secondary: {
         fontSize: '.9rem',
-        color: palette.text.main,
+        //color: palette.text.main,
         "&:hover": {
           color: palette.primary.dark,
           fontWeight: 'bold',
@@ -137,45 +150,6 @@ const siteTheme = createMuiTheme({
         transition: 'unset'
       }
     },
-
-    MuiFormControl: {
-      root: {
-        "& .MuiOutlinedInput-input": {
-          color: palette.primary.contrastText
-        },
-        "& .MuiInputLabel-root": {
-          color: palette.primary.contrastText
-        },
-        "& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
-          color: palette.primary.contrastText
-        },
-        "&:hover .MuiOutlinedInput-input": {
-          color: palette.primary.contrastText
-        },
-        "&:hover .MuiInputLabel-root": {
-          color: palette.primary.contrastText
-        },
-        "&:hover .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline": {
-          borderColor: palette.primary.contrastText,
-          borderWidth: '1px'
-        },
-        "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-input": {
-          color: palette.primary.contrastText
-        },
-        "& .MuiInputLabel-root.Mui-focused": {
-          color: palette.primary.contrastText
-        },
-        "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-          borderColor: palette.primary.contrastText
-        },
-        "& .MuiFormLabel-root": {
-          color: palette.primary.contrastText
-        },
-        "& .MuiListItem-root .MuiTouchRipple-child": {
-          backgroundColor: palette.info.main
-        }
-      }
-    }
   },
   props: {
     MuiButton: {
@@ -190,4 +164,4 @@ const siteTheme = createMuiTheme({
 
 });
 
-export default siteTheme;
+export { siteTheme };

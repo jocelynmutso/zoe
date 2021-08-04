@@ -31,6 +31,7 @@ import io.quarkus.runtime.annotations.Recorder;
 import io.quarkus.security.identity.CurrentIdentityAssociation;
 import io.quarkus.vertx.http.runtime.CurrentVertxRequest;
 import io.vertx.core.Handler;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.ext.web.Route;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
@@ -79,6 +80,10 @@ public class IDEServicesRecorder {
 
   public Consumer<Route> routeFunction(Handler<RoutingContext> bodyHandler) {
     return (route) -> route.handler(bodyHandler);
+  }
+
+  public Consumer<Route> idRouteFunction(Handler<RoutingContext> bodyHandler, HttpMethod method) {
+    return (route) -> route.method(method).handler(bodyHandler);
   }
   
   public Function<Router, Route> routeFunction(String rootPath, Handler<RoutingContext> bodyHandler) {

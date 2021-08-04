@@ -1,5 +1,7 @@
 package io.github.jocelynmutso.zoe.quarkus.ide.services;
 
+import java.util.function.Consumer;
+
 /*-
  * #%L
  * quarkus-zoe-ide-services-deployment
@@ -56,6 +58,7 @@ import io.quarkus.vertx.http.deployment.HttpRootPathBuildItem;
 import io.quarkus.vertx.http.deployment.RouteBuildItem;
 import io.quarkus.vertx.http.deployment.devmode.NotFoundPageDisplayableEndpointBuildItem;
 import io.vertx.core.Handler;
+import io.vertx.core.http.HttpMethod;
 import io.vertx.ext.web.RoutingContext;
 
 
@@ -114,13 +117,42 @@ public class IDEServicesProcessor {
     final var bodyHandler = body.getHandler();
     final Handler<RoutingContext> handler = recorder.ideServicesHandler();
     
+    
+    final Consumer<String> addRoute = (path) -> {
+      routes.produce(httpRoot.routeBuilder()
+          .routeFunction(path, recorder.routeFunction(bodyHandler))
+          .handler(handler)
+          .displayOnNotFoundPage()
+          .build());
+      routes.produce(httpRoot.routeBuilder()
+          .routeFunction(path + "/", recorder.routeFunction(bodyHandler))
+          .handler(handler)
+          .displayOnNotFoundPage()
+          .build());
+      routes.produce(httpRoot.routeBuilder()
+          .routeFunction(path + "/:id", recorder.idRouteFunction(bodyHandler, HttpMethod.DELETE))
+          .handler(handler)
+          .displayOnNotFoundPage()
+          .build());
+    };
+    
+    addRoute.accept(buildItem.getServicePath());
+    addRoute.accept(buildItem.getArticlesPath());
+    addRoute.accept(buildItem.getPagesPath());
+    addRoute.accept(buildItem.getLinksPath());
+    addRoute.accept(buildItem.getLocalePath());
+    addRoute.accept(buildItem.getReleasesPath());
+    addRoute.accept(buildItem.getWorkflowsPath());
+    
     routes.produce(httpRoot.routeBuilder()
-        .routeFunction(buildItem.getServicePath(), recorder.routeFunction(bodyHandler))
+        .routeFunction(buildItem.getLinksPath() + "/:id?:articleId", recorder.idRouteFunction(bodyHandler, HttpMethod.DELETE))
         .handler(handler)
+        .displayOnNotFoundPage()
         .build());
     routes.produce(httpRoot.routeBuilder()
-        .routeFunction(buildItem.getServicePath() + "/*", recorder.routeFunction(bodyHandler))
+        .routeFunction(buildItem.getWorkflowsPath() + "/:id?:articleId", recorder.idRouteFunction(bodyHandler, HttpMethod.DELETE))
         .handler(handler)
+        .displayOnNotFoundPage()
         .build());
   }
   

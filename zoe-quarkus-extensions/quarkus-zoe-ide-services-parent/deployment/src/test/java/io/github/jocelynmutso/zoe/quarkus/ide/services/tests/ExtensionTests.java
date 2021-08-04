@@ -32,7 +32,6 @@ import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateLocale;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreatePage;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateRelease;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateWorkflow;
-import io.github.jocelynmutso.zoe.persistence.api.ImmutableLinkArticlePage;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableLinkMutator;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableLocaleMutator;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutablePageMutator;
@@ -70,7 +69,7 @@ public class ExtensionTests extends MongoDbConfig {
             .build()
           ).toString())
       .when().post("/zoe-ide-services/articles")
-      .then()
+      .then().statusCode(200)
       .extract()
         .response()
         .body()
@@ -88,7 +87,7 @@ public class ExtensionTests extends MongoDbConfig {
               .build()
               ).toString())
             .when().post("/zoe-ide-services/pages")
-            .then()
+            .then().statusCode(200)
               .extract()
               .response()
               .body()
@@ -105,7 +104,7 @@ public class ExtensionTests extends MongoDbConfig {
             .build()
             ).toString())
           .when().post("/zoe-ide-services/links")
-          .then()
+          .then().statusCode(200)
             .extract()
             .response()
             .body()
@@ -119,7 +118,7 @@ public class ExtensionTests extends MongoDbConfig {
             .build()
             ).toString())
           .when().post("/zoe-ide-services/locales")
-          .then() 
+          .then().statusCode(200)
             .extract()
             .response()
             .body()
@@ -135,7 +134,7 @@ public class ExtensionTests extends MongoDbConfig {
             .build()
             ).toString())
           .when().post("/zoe-ide-services/workflows")
-          .then()
+          .then().statusCode(200)
             .extract()
             .response()
             .body()
@@ -220,7 +219,16 @@ public class ExtensionTests extends MongoDbConfig {
           .when().put("/zoe-ide-services/workflows")
           .then().statusCode(200);
 
-   
+    
+    // linkArticle
+    RestAssured.delete("/zoe-ide-services/links/" + linkId + "?articleId="+articleId)
+           .then().statusCode(200);
+  
+     
+     // workflowArticle
+    RestAssured.delete("/zoe-ide-services/workflows/" + workflowId + "?articleId="+articleId)
+    .then().statusCode(200);    
+    
     /* ---------------------- DELETE TESTS  ----------------------*/
   
     
@@ -252,12 +260,6 @@ public class ExtensionTests extends MongoDbConfig {
     
     RestAssured.given().delete("/zoe-ide-services/workflows/" + workflowId)
     .then().statusCode(200);
-    
-    // linkArticle
-  
- 
-    
-    // workflowArticle
     
     
   }

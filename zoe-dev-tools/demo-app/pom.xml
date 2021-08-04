@@ -38,6 +38,10 @@
       <groupId>io.github.jocelynmutso</groupId>
       <artifactId>quarkus-zoe-ide</artifactId>
     </dependency>
+    <dependency>
+      <groupId>io.github.jocelynmutso</groupId>
+      <artifactId>quarkus-zoe-ide-services</artifactId>
+    </dependency>
   </dependencies>
 
   <build>

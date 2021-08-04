@@ -8,9 +8,16 @@ quarkus:
       io.resys:
         level: DEBUG
 
-
   zoe-ide:
     server-path: not-ready
+
+  zoe-ide-services:
+    service-path: /q/zoe-ide-services
+    db:
+      db-name: test-assets
+      connection-url: mongodb://appUser:123456@localhost:27017/test-assets?authSource=test-assets
+    repo:
+      repo-name: test-assets
 
 "%prod":
   quarkus:
@@ -21,4 +28,6 @@ quarkus:
       level: DEBUG
       category: 
         io.github.jocelynmutso:
+          level: DEBUG
+        io.resys:
           level: DEBUG

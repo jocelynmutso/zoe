@@ -5,7 +5,7 @@ import { ThemeProvider } from '@material-ui/core';
 import { IntlProvider } from 'react-intl'
 
 import { CMSEditor, API, messages } from 'zoe-ide';
-import siteTheme from './themes/siteTheme'
+import { siteTheme } from './themes/siteTheme'
 
 const locale = "en";
 const service = API.mock();
