@@ -26,6 +26,7 @@ import java.util.UUID;
 
 import javax.enterprise.context.ApplicationScoped;
 import javax.enterprise.inject.Produces;
+import javax.inject.Singleton;
 
 import org.bson.codecs.DocumentCodecProvider;
 import org.bson.codecs.ValueCodecProvider;
@@ -33,12 +34,15 @@ import org.bson.codecs.jsr310.Jsr310CodecProvider;
 import org.bson.internal.ProvidersCodecRegistry;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.guava.GuavaModule;
 import com.mongodb.ConnectionString;
 import com.mongodb.MongoClientSettings;
 import com.mongodb.reactivestreams.client.MongoClients;
 
 import io.github.jocelynmutso.zoe.persistence.spi.ZoePersistenceImpl;
 import io.github.jocelynmutso.zoe.persistence.spi.serializers.ZoeDeserializer;
+import io.quarkus.arc.runtime.BeanContainer.Instance;
+import io.quarkus.jackson.ObjectMapperCustomizer;
 import io.quarkus.mongodb.impl.ReactiveMongoClientImpl;
 import io.resys.thena.docdb.spi.DocDBCodecProvider;
 import io.resys.thena.docdb.spi.DocDBFactory;
@@ -61,6 +65,20 @@ public class IDEServicesProducer {
     return this;
   }
 
+  @Singleton
+  public static class RegisterGuava implements ObjectMapperCustomizer {
+    @Override
+    public void customize(ObjectMapper objectMapper) {
+      objectMapper.registerModule(new GuavaModule());
+    }
+  }
+
+  @Produces
+  @ApplicationScoped
+  public RegisterGuava registerGuava() {
+    return new RegisterGuava();
+  }
+  
   @Produces
   @ApplicationScoped
   public IDEServicesContext zoeIdeServicesContext(Vertx vertx, ObjectMapper objectMapper) {

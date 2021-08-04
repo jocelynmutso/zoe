@@ -32,9 +32,10 @@ import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateLocale;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreatePage;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateRelease;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateWorkflow;
+import io.github.jocelynmutso.zoe.persistence.api.ImmutableLinkMutator;
+import io.github.jocelynmutso.zoe.persistence.api.ImmutablePageMutator;
 import io.quarkus.test.QuarkusUnitTest;
 import io.restassured.RestAssured;
-import io.restassured.path.json.JsonPath;
 import io.vertx.core.json.JsonObject;
 
 
@@ -74,7 +75,7 @@ public class ExtensionTests extends MongoDbConfig {
   
    
     
-    RestAssured.given()
+   String pageId = RestAssured.given()
       .body(
           JsonObject.mapFrom(
               ImmutableCreatePage.builder()
@@ -84,9 +85,13 @@ public class ExtensionTests extends MongoDbConfig {
               .build()
               ).toString())
             .when().post("/zoe-ide-services/pages")
-            .then().statusCode(200);
+            .then()
+              .extract()
+              .response()
+              .body()
+              .path("id");
     
-    RestAssured.given()
+   String linkId = RestAssured.given()
     .body(
         JsonObject.mapFrom(
             ImmutableCreateLink.builder()
@@ -97,7 +102,11 @@ public class ExtensionTests extends MongoDbConfig {
             .build()
             ).toString())
           .when().post("/zoe-ide-services/links")
-          .then().statusCode(200);
+          .then()
+            .extract()
+            .response()
+            .body()
+            .path("id");
   
     RestAssured.given()
     .body( 
@@ -144,7 +153,34 @@ public class ExtensionTests extends MongoDbConfig {
           .when().put("/zoe-ide-services/articles/")
           .then().statusCode(200);
     
+    RestAssured.given()
+    .body(
+         JsonObject.mapFrom(
+            ImmutablePageMutator.builder()
+            .pageId(pageId)
+            .content("# new content")
+            .locale("sv")
+            .build()
+            ).toString())
+          .when().put("/zoe-ide-services/pages")
+          .then().statusCode(200);
     
+    
+    RestAssured.given()
+    .body(
+         JsonObject.mapFrom(
+            ImmutableLinkMutator.builder()
+            .linkId(linkId)
+            .content("# new content")
+            .locale("sv")
+            .description("stuff")
+            .type("internal")
+            .build()
+            ).toString())
+          .when().put("/zoe-ide-services/links")
+          .then().statusCode(200);
+    
+   
   }
   
 }

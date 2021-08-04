@@ -33,6 +33,8 @@ import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 import io.github.jocelynmutso.zoe.quarkus.ide.services.IDEServicesContext;
 import io.quarkus.arc.Arc;
 import io.quarkus.arc.ManagedContext;
@@ -60,7 +62,7 @@ public abstract class HdesResourceHandler implements Handler<RoutingContext> {
     this.currentVertxRequest = currentVertxRequest;
   }
   
-  protected abstract void handleResource(RoutingContext event, HttpServerResponse response, IDEServicesContext ctx);
+  protected abstract void handleResource(RoutingContext event, HttpServerResponse response, IDEServicesContext ctx, ObjectMapper objectMapper);
   
   protected void handleSecurity(RoutingContext event) {
     if (currentIdentityAssociation != null) {
@@ -82,8 +84,9 @@ public abstract class HdesResourceHandler implements Handler<RoutingContext> {
       handleSecurity(event);      
       HttpServerResponse response = event.response();
       IDEServicesContext ctx = CDI.current().select(IDEServicesContext.class).get();
+      ObjectMapper objectMapper = CDI.current().select(ObjectMapper.class).get();
       try {
-        handleResource(event, response, ctx);
+        handleResource(event, response, ctx, objectMapper);
       } catch (Exception e) {
         catch422(e, ctx, response);
       }
@@ -92,10 +95,11 @@ public abstract class HdesResourceHandler implements Handler<RoutingContext> {
     
     HttpServerResponse response = event.response();
     IDEServicesContext ctx = CDI.current().select(IDEServicesContext.class).get();
+    ObjectMapper objectMapper = CDI.current().select(ObjectMapper.class).get();
     try {
       requestContext.activate();
       handleSecurity(event);
-      handleResource(event, response, ctx);
+      handleResource(event, response, ctx, objectMapper);
     } finally {
       requestContext.terminate();
     }

@@ -1,5 +1,9 @@
 package io.github.jocelynmutso.zoe.quarkus.ide.services.handlers;
 
+import java.io.IOException;
+
+import com.fasterxml.jackson.databind.ObjectMapper;
+
 /*-
  * #%L
  * quarkus-zoe-ide-services
@@ -45,13 +49,12 @@ import io.vertx.ext.web.RoutingContext;
 
 public class IDEServicesResourceHandler extends HdesResourceHandler {
 
-  public IDEServicesResourceHandler(CurrentIdentityAssociation currentIdentityAssociation,
-      CurrentVertxRequest currentVertxRequest) {
+  public IDEServicesResourceHandler(CurrentIdentityAssociation currentIdentityAssociation, CurrentVertxRequest currentVertxRequest) {
     super(currentIdentityAssociation, currentVertxRequest);
   }
 
   @Override
-  protected void handleResource(RoutingContext event, HttpServerResponse response, IDEServicesContext ctx) {
+  protected void handleResource(RoutingContext event, HttpServerResponse response, IDEServicesContext ctx, ObjectMapper objectMapper) {
     response.headers().set(HttpHeaders.CONTENT_TYPE, "application/json; charset=UTF-8");
     final var path = event.normalisedPath();
     final var client = ctx.getClient();
@@ -72,12 +75,12 @@ public class IDEServicesResourceHandler extends HdesResourceHandler {
       
       if (event.request().method() == HttpMethod.POST) {
         subscribe(
-            client.create().article(read(event, ImmutableCreateArticle.class)), 
+            client.create().article(read(event, objectMapper, ImmutableCreateArticle.class)), 
             response, ctx);
         
       } else if(event.request().method() == HttpMethod.PUT) {
         subscribe(
-            client.update().article(read(event, ImmutableArticleMutator.class)),
+            client.update().article(read(event, objectMapper, ImmutableArticleMutator.class)),
             response, ctx);
       } else if(event.request().method() == HttpMethod.DELETE) {
         subscribe(
@@ -94,12 +97,12 @@ public class IDEServicesResourceHandler extends HdesResourceHandler {
       
       if (event.request().method() == HttpMethod.POST) {
         subscribe(
-            client.create().link(read(event, ImmutableCreateLink.class)), 
+            client.create().link(read(event, objectMapper, ImmutableCreateLink.class)), 
             response, ctx);
         
       } else if(event.request().method() == HttpMethod.PUT) {
         subscribe(
-            client.update().link(read(event, ImmutableLinkMutator.class)),
+            client.update().link(read(event, objectMapper, ImmutableLinkMutator.class)),
             response, ctx);
       } else if(event.request().method() == HttpMethod.DELETE) {
         subscribe(
@@ -116,12 +119,12 @@ public class IDEServicesResourceHandler extends HdesResourceHandler {
       
       if (event.request().method() == HttpMethod.POST) {
         subscribe(
-            client.create().locale(read(event, ImmutableCreateLocale.class)), 
+            client.create().locale(read(event, objectMapper, ImmutableCreateLocale.class)), 
             response, ctx);
         
       } else if(event.request().method() == HttpMethod.PUT) {
         subscribe(
-            client.update().locale(read(event, ImmutableLocaleMutator.class)),
+            client.update().locale(read(event, objectMapper, ImmutableLocaleMutator.class)),
             response, ctx);
       } else if(event.request().method() == HttpMethod.DELETE) {
         subscribe(
@@ -138,7 +141,7 @@ public class IDEServicesResourceHandler extends HdesResourceHandler {
       
       if (event.request().method() == HttpMethod.POST) {
         subscribe(
-            client.create().release(read(event, ImmutableCreateRelease.class)), 
+            client.create().release(read(event, objectMapper, ImmutableCreateRelease.class)), 
             response, ctx);
       } else {
         catch404("unsupported release action", ctx, response);
@@ -150,12 +153,12 @@ public class IDEServicesResourceHandler extends HdesResourceHandler {
       
       if (event.request().method() == HttpMethod.POST) {
         subscribe(
-            client.create().workflow(read(event, ImmutableCreateWorkflow.class)), 
+            client.create().workflow(read(event, objectMapper, ImmutableCreateWorkflow.class)), 
             response, ctx);
         
       } else if(event.request().method() == HttpMethod.PUT) {
         subscribe(
-            client.update().workflow(read(event, ImmutableWorkflowMutator.class)),
+            client.update().workflow(read(event, objectMapper, ImmutableWorkflowMutator.class)),
             response, ctx);
       } else if(event.request().method() == HttpMethod.DELETE) {
         subscribe(
@@ -172,11 +175,11 @@ public class IDEServicesResourceHandler extends HdesResourceHandler {
       
       if (event.request().method() == HttpMethod.POST) {
         subscribe(
-            client.create().page(read(event, ImmutableCreatePage.class)),
+            client.create().page(read(event, objectMapper, ImmutableCreatePage.class)),
             response, ctx);
       } else if(event.request().method() == HttpMethod.PUT) {
         subscribe(
-            client.update().page(read(event, ImmutablePageMutator.class)),
+            client.update().page(read(event, objectMapper, ImmutablePageMutator.class)),
             response, ctx);
         
       } else if(event.request().method() == HttpMethod.DELETE) {
@@ -192,8 +195,14 @@ public class IDEServicesResourceHandler extends HdesResourceHandler {
     }
   }
   
-  public <T> T read(RoutingContext event, Class<T> type) {
-    return new JsonObject(event.getBody()).mapTo(type);
+  public <T> T read(RoutingContext event, ObjectMapper objectMapper, Class<T> type) {
+    
+   // return new JsonObject(event.getBody()).mapTo(type);
+    try {
+      return objectMapper.readValue(event.getBody().getBytes(), type);
+    } catch(IOException e) {
+      throw new RuntimeException(e.getMessage(), e);
+    }
   }
 
   public <T extends EntityBody> void subscribe(Uni<Entity<T>> uni, HttpServerResponse response, IDEServicesContext ctx) {
