@@ -141,7 +141,6 @@ public class ExtensionTests extends MongoDbConfig {
             .body()
             .path("id");
    
-
    
    /* ----------------------   UPDATE TESTS  ----------------------*/
    
@@ -252,10 +251,11 @@ public class ExtensionTests extends MongoDbConfig {
     // workflow
     
     RestAssured.given().delete("/zoe-ide-services/workflows/" + workflowId)
-          .then().statusCode(200);
+    .then().statusCode(200);
     
     // linkArticle
-    
+  
+ 
     
     // workflowArticle
     
