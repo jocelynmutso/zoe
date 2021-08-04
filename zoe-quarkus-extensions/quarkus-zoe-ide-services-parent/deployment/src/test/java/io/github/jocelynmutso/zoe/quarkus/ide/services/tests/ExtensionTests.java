@@ -32,6 +32,7 @@ import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateLocale;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreatePage;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateRelease;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateWorkflow;
+import io.github.jocelynmutso.zoe.persistence.api.ImmutableLinkArticlePage;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableLinkMutator;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableLocaleMutator;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutablePageMutator;
@@ -140,8 +141,9 @@ public class ExtensionTests extends MongoDbConfig {
             .body()
             .path("id");
    
+
    
-   /* --------------------------------------------*/
+   /* ----------------------   UPDATE TESTS  ----------------------*/
    
     
     RestAssured.given()
@@ -218,8 +220,44 @@ public class ExtensionTests extends MongoDbConfig {
             ).toString())
           .when().put("/zoe-ide-services/workflows")
           .then().statusCode(200);
-    
+
    
+    /* ---------------------- DELETE TESTS  ----------------------*/
+  
+    
+    // article
+  
+    RestAssured.given().delete("/zoe-ide-services/articles/" + articleId)
+    .then().statusCode(200);
+    
+    
+    // page
+    
+    RestAssured.given().delete("/zoe-ide-services/pages/" + pageId)
+    .then().statusCode(200);
+    
+    
+    // link
+    
+    RestAssured.given().delete("/zoe-ide-services/links/" + linkId)
+    .then().statusCode(200);
+
+    
+    // locale
+    
+    RestAssured.given().delete("/zoe-ide-services/locales/" + localeId)
+    .then().statusCode(200);
+    
+    
+    // workflow
+    
+    RestAssured.given().delete("/zoe-ide-services/workflows/" + workflowId)
+          .then().statusCode(200);
+    
+    // linkArticle
+    
+    
+    // workflowArticle
     
     
   }

@@ -213,7 +213,7 @@ public class IDEServicesResourceHandler extends HdesResourceHandler {
   
   private String getId(String path) {
     final var index = path.lastIndexOf("/");
-    if(index < -1 || path.length() > index + 1) {
+    if(index < -1 || path.length() < index + 1) {
       return "";
     }
     return path.substring(index+1);
