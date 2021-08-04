@@ -29,11 +29,11 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Article;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Entity;
+import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.EntityRepo;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Link;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Locale;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Page;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Release;
-import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.EntityRepo;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Workflow;
 import io.smallrye.mutiny.Uni;
 
@@ -45,8 +45,7 @@ public interface CreateBuilder {
   Uni<Entity<Locale>> locale(CreateLocale init);
   Uni<Entity<Page>> page(CreatePage init);
   Uni<Entity<Link>> link(CreateLink init);
-  Uni<Entity<Workflow>> workflow(CreateWorkflow init);
-  
+  Uni<Entity<Workflow>> workflow(CreateWorkflow init);  
   
   @Value.Immutable
   @JsonSerialize(as = ImmutableCreateArticle.class)
@@ -103,4 +102,5 @@ public interface CreateBuilder {
     String getLocale(); 
     String getContent(); 
   }
+
 }
