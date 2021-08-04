@@ -29,7 +29,7 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Article;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Entity;
-import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.EntityRepo;
+import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.SiteState;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Link;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Locale;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Page;
@@ -39,7 +39,7 @@ import io.smallrye.mutiny.Uni;
 
 public interface CreateBuilder {
   
-  Uni<EntityRepo> repo();
+  Uni<SiteState> repo();
   Uni<Entity<Article>> article(CreateArticle init);
   Uni<Entity<Release>> release(CreateRelease init);
   Uni<Entity<Locale>> locale(CreateLocale init);

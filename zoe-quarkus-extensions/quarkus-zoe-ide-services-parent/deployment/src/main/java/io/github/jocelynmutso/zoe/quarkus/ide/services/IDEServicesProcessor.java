@@ -31,7 +31,6 @@ import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreatePage;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateRelease;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateWorkflow;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableEntity;
-import io.github.jocelynmutso.zoe.persistence.api.ImmutableEntityRepo;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableLink;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableLinkArticlePage;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableLinkMutator;
@@ -40,6 +39,7 @@ import io.github.jocelynmutso.zoe.persistence.api.ImmutableLocaleMutator;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutablePage;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutablePageMutator;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableRelease;
+import io.github.jocelynmutso.zoe.persistence.api.ImmutableSiteState;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableWorkflow;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableWorkflowArticlePage;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableWorkflowMutator;
@@ -159,7 +159,7 @@ public class IDEServicesProcessor {
   @BuildStep
   public ReflectiveClassBuildItem reflection() {
     return new ReflectiveClassBuildItem(true, true,
-        ImmutableEntityRepo.class,
+        ImmutableSiteState.class,
         ImmutableArticle.class,
         ImmutableArticleMutator.class,
         ImmutableCreateArticle.class,

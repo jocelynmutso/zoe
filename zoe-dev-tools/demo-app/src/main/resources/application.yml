@@ -9,7 +9,7 @@ quarkus:
         level: DEBUG
 
   zoe-ide:
-    server-path: not-ready
+    server-path: /q/zoe-ide-services
 
   zoe-ide-services:
     service-path: /q/zoe-ide-services

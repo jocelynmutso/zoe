@@ -22,6 +22,7 @@ package io.github.jocelynmutso.zoe.persistence.api;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.Nullable;
 
@@ -30,17 +31,37 @@ import org.immutables.value.Value;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
+import io.smallrye.mutiny.Uni;
+
+
 public interface ZoePersistence {
 
   CreateBuilder create();
   UpdateBuilder update();
   DeleteBuilder delete();
+  QueryBuilder query();
+  
+  interface QueryBuilder {
+    Uni<SiteState> get();
+  }
+
   
   @Value.Immutable
-  @JsonSerialize(as = ImmutableEntityRepo.class)
-  @JsonDeserialize(as = ImmutableEntityRepo.class)
-  interface EntityRepo {
+  @JsonSerialize(as = ImmutableSiteState.class)
+  @JsonDeserialize(as = ImmutableSiteState.class)
+  interface SiteState {
     String getName(); 
+    SiteContentType getContentType();
+    Map<String, Entity<Release>> getReleases();
+    Map<String, Entity<Locale>> getLocales();
+    Map<String, Entity<Page>> getPages();
+    Map<String, Entity<Link>> getLinks();
+    Map<String, Entity<Article>> getArticles();
+    Map<String, Entity<Workflow>> getWorkflows();
+  }
+  
+  enum SiteContentType {
+    OK, ERRORS, NO_CREATED
   }
   
   @Value.Immutable

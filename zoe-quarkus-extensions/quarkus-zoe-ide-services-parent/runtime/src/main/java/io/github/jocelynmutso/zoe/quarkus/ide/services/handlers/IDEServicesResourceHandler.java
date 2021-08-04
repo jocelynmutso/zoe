@@ -37,12 +37,11 @@ import io.github.jocelynmutso.zoe.persistence.api.ImmutableLocaleMutator;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutablePageMutator;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableWorkflowArticlePage;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableWorkflowMutator;
-import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Entity;
-import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.EntityBody;
 import io.github.jocelynmutso.zoe.quarkus.ide.services.IDEServicesContext;
 import io.quarkus.security.identity.CurrentIdentityAssociation;
 import io.quarkus.vertx.http.runtime.CurrentVertxRequest;
 import io.smallrye.mutiny.Uni;
+import io.vertx.core.buffer.Buffer;
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServerResponse;
@@ -66,7 +65,12 @@ public class IDEServicesResourceHandler extends HdesResourceHandler {
         client.create().repo()
         .onItem().transform(data -> JsonObject.mapFrom(data).toBuffer())
         .onFailure().invoke(e -> catch422(e, ctx, response))
-        .subscribe().with(data -> response.end(data)); 
+        .subscribe().with(data -> response.end(data));
+        
+      } else if(event.request().method() == HttpMethod.GET) { 
+        subscribe(
+            client.query().get(), 
+            response, ctx, objectMapper);
       } else {
         catch404("unsupported repository action", ctx, response);
       }
@@ -78,16 +82,16 @@ public class IDEServicesResourceHandler extends HdesResourceHandler {
       if (event.request().method() == HttpMethod.POST) {
         subscribe(
             client.create().article(read(event, objectMapper, ImmutableCreateArticle.class)), 
-            response, ctx);
+            response, ctx, objectMapper);
         
       } else if(event.request().method() == HttpMethod.PUT) {
         subscribe(
             client.update().article(read(event, objectMapper, ImmutableArticleMutator.class)),
-            response, ctx);
+            response, ctx, objectMapper);
       } else if(event.request().method() == HttpMethod.DELETE) {
         subscribe(
             client.delete().article(event.pathParam("id")),
-            response, ctx);
+            response, ctx, objectMapper);
       } else {
         catch404("unsupported article action", ctx, response);
       }
@@ -100,12 +104,12 @@ public class IDEServicesResourceHandler extends HdesResourceHandler {
       if (event.request().method() == HttpMethod.POST) {
         subscribe(
             client.create().link(read(event, objectMapper, ImmutableCreateLink.class)), 
-            response, ctx);
+            response, ctx, objectMapper);
         
       } else if(event.request().method() == HttpMethod.PUT) {
         subscribe(
             client.update().link(read(event, objectMapper, ImmutableLinkMutator.class)),
-            response, ctx);
+            response, ctx, objectMapper);
       } else if(event.request().method() == HttpMethod.DELETE) {
         
         final var linkId = event.pathParam("id");
@@ -114,14 +118,14 @@ public class IDEServicesResourceHandler extends HdesResourceHandler {
         if(articleId.isEmpty()) {
           subscribe(
               client.delete().link(linkId),
-              response, ctx);
+              response, ctx, objectMapper);
         } else {
           subscribe(
               client.delete().linkArticlePage(ImmutableLinkArticlePage.builder()
                   .articleId(articleId.iterator().next())
                   .linkId(linkId)
                   .build()),
-              response, ctx);  
+              response, ctx, objectMapper);  
         }
         
       } else {
@@ -138,16 +142,16 @@ public class IDEServicesResourceHandler extends HdesResourceHandler {
       if (event.request().method() == HttpMethod.POST) {
         subscribe(
             client.create().locale(read(event, objectMapper, ImmutableCreateLocale.class)), 
-            response, ctx);
+            response, ctx, objectMapper);
         
       } else if(event.request().method() == HttpMethod.PUT) {
         subscribe(
             client.update().locale(read(event, objectMapper, ImmutableLocaleMutator.class)),
-            response, ctx);
+            response, ctx, objectMapper);
       } else if(event.request().method() == HttpMethod.DELETE) {
         subscribe(
             client.delete().locale(event.pathParam("id")),
-            response, ctx);
+            response, ctx, objectMapper);
       } else {
         catch404("unsupported locale action", ctx, response);
       }
@@ -160,7 +164,7 @@ public class IDEServicesResourceHandler extends HdesResourceHandler {
       if (event.request().method() == HttpMethod.POST) {
         subscribe(
             client.create().release(read(event, objectMapper, ImmutableCreateRelease.class)), 
-            response, ctx);
+            response, ctx, objectMapper);
       } else {
         catch404("unsupported release action", ctx, response);
       }
@@ -173,12 +177,12 @@ public class IDEServicesResourceHandler extends HdesResourceHandler {
       if (event.request().method() == HttpMethod.POST) {
         subscribe(
             client.create().workflow(read(event, objectMapper, ImmutableCreateWorkflow.class)), 
-            response, ctx);
+            response, ctx, objectMapper);
         
       } else if(event.request().method() == HttpMethod.PUT) {
         subscribe(
             client.update().workflow(read(event, objectMapper, ImmutableWorkflowMutator.class)),
-            response, ctx);
+            response, ctx, objectMapper);
       } else if(event.request().method() == HttpMethod.DELETE) {
         
         
@@ -188,7 +192,7 @@ public class IDEServicesResourceHandler extends HdesResourceHandler {
         if(articleId.isEmpty()) {
           subscribe(
               client.delete().workflow(workflowId),
-              response, ctx);
+              response, ctx, objectMapper);
           
         } else {
           subscribe(
@@ -196,7 +200,7 @@ public class IDEServicesResourceHandler extends HdesResourceHandler {
                   .articleId(articleId.iterator().next())
                   .workflowId(workflowId)
                   .build()),
-              response, ctx);  
+              response, ctx, objectMapper);  
         }
 
       } else {
@@ -211,16 +215,16 @@ public class IDEServicesResourceHandler extends HdesResourceHandler {
       if (event.request().method() == HttpMethod.POST) {
         subscribe(
             client.create().page(read(event, objectMapper, ImmutableCreatePage.class)),
-            response, ctx);
+            response, ctx, objectMapper);
       } else if(event.request().method() == HttpMethod.PUT) {
         subscribe(
             client.update().page(read(event, objectMapper, ImmutablePageMutator.class)),
-            response, ctx);
+            response, ctx, objectMapper);
         
       } else if(event.request().method() == HttpMethod.DELETE) {
         subscribe(
             client.delete().page(event.pathParam("id")),
-            response, ctx);
+            response, ctx, objectMapper);
  
       } else {
         catch404("unsupported page action", ctx, response);
@@ -240,8 +244,14 @@ public class IDEServicesResourceHandler extends HdesResourceHandler {
     }
   }
 
-  public <T extends EntityBody> void subscribe(Uni<Entity<T>> uni, HttpServerResponse response, IDEServicesContext ctx) {
-    uni.onItem().transform(data -> JsonObject.mapFrom(data).toBuffer())
+  public <T> void subscribe(Uni<T> uni, HttpServerResponse response, IDEServicesContext ctx, ObjectMapper objectMapper) {
+    uni.onItem().transform(data -> {
+      try {
+        return Buffer.buffer(objectMapper.writeValueAsBytes(data));
+      } catch(IOException e) {
+        throw new RuntimeException(e.getMessage(), e);
+      }
+    })
     .onFailure().invoke(e -> catch422(e, ctx, response))
     .subscribe().with(data -> response.end(data)); 
   }

@@ -28,6 +28,7 @@ import io.github.jocelynmutso.zoe.persistence.api.UpdateBuilder;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence;
 import io.github.jocelynmutso.zoe.persistence.spi.builders.CreateBuilderImpl;
 import io.github.jocelynmutso.zoe.persistence.spi.builders.DeleteBuilderImpl;
+import io.github.jocelynmutso.zoe.persistence.spi.builders.QueryBuilderImpl;
 import io.github.jocelynmutso.zoe.persistence.spi.builders.UpdateBuilderImpl;
 
 public class ZoePersistenceImpl implements ZoePersistence {
@@ -53,7 +54,11 @@ public class ZoePersistenceImpl implements ZoePersistence {
   public DeleteBuilder delete() {
     return new DeleteBuilderImpl(config);
   }
-
+  
+  @Override
+  public QueryBuilder query() {
+    return new QueryBuilderImpl(config);
+  }
   
   public static Builder builder() {
     return new Builder();

@@ -41,7 +41,6 @@ import com.mongodb.reactivestreams.client.MongoClients;
 
 import io.github.jocelynmutso.zoe.persistence.spi.ZoePersistenceImpl;
 import io.github.jocelynmutso.zoe.persistence.spi.serializers.ZoeDeserializer;
-import io.quarkus.arc.runtime.BeanContainer.Instance;
 import io.quarkus.jackson.ObjectMapperCustomizer;
 import io.quarkus.mongodb.impl.ReactiveMongoClientImpl;
 import io.resys.thena.docdb.spi.DocDBCodecProvider;

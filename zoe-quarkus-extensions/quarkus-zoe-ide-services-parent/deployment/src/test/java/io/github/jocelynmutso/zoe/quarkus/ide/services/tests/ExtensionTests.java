@@ -38,6 +38,7 @@ import io.github.jocelynmutso.zoe.persistence.api.ImmutablePageMutator;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableWorkflowMutator;
 import io.quarkus.test.QuarkusUnitTest;
 import io.restassured.RestAssured;
+import io.restassured.response.Response;
 import io.vertx.core.json.JsonObject;
 
 
@@ -57,6 +58,10 @@ public class ExtensionTests extends MongoDbConfig {
   @Test
   public void postArticles() {
 
+    RestAssured.given()
+    .when().get("/zoe-ide-services")
+    .then().statusCode(200);
+    
     RestAssured.given()
     .when().post("/zoe-ide-services")
     .then().statusCode(200);
@@ -140,21 +145,21 @@ public class ExtensionTests extends MongoDbConfig {
             .body()
             .path("id");
    
+
+   RestAssured.given()
+   .body(
+       JsonObject.mapFrom(
+           ImmutableCreateRelease.builder()
+           .name("v1.0")
+           .note("init release")
+           .build()
+           ).toString())
+         .when().post("/zoe-ide-services/releases")
+         .then().statusCode(200);
+   
    
    /* ----------------------   UPDATE TESTS  ----------------------*/
    
-    
-    RestAssured.given()
-    .body(
-        JsonObject.mapFrom(
-            ImmutableCreateRelease.builder()
-            .name("v1.0")
-            .note("init release")
-            .build()
-            ).toString())
-          .when().post("/zoe-ide-services/releases")
-          .then().statusCode(200);
-    
     RestAssured.given()
     .body(
         JsonObject.mapFrom(
@@ -219,6 +224,12 @@ public class ExtensionTests extends MongoDbConfig {
           .when().put("/zoe-ide-services/workflows")
           .then().statusCode(200);
 
+    
+    
+
+    Response site = RestAssured.given().when().get("/zoe-ide-services");
+    System.out.println(site.prettyPrint());
+    site.then().statusCode(200);
     
     // linkArticle
     RestAssured.delete("/zoe-ide-services/links/" + linkId + "?articleId="+articleId)
