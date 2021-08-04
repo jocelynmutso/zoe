@@ -33,7 +33,9 @@ import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreatePage;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateRelease;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateWorkflow;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableLinkMutator;
+import io.github.jocelynmutso.zoe.persistence.api.ImmutableLocaleMutator;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutablePageMutator;
+import io.github.jocelynmutso.zoe.persistence.api.ImmutableWorkflowMutator;
 import io.quarkus.test.QuarkusUnitTest;
 import io.restassured.RestAssured;
 import io.vertx.core.json.JsonObject;
@@ -108,7 +110,7 @@ public class ExtensionTests extends MongoDbConfig {
             .body()
             .path("id");
   
-    RestAssured.given()
+   String localeId = RestAssured.given()
     .body( 
         JsonObject.mapFrom(
             ImmutableCreateLocale.builder()
@@ -116,9 +118,13 @@ public class ExtensionTests extends MongoDbConfig {
             .build()
             ).toString())
           .when().post("/zoe-ide-services/locales")
-          .then().statusCode(200);
+          .then() 
+            .extract()
+            .response()
+            .body()
+            .path("id");
     
-    RestAssured.given() 
+   String workflowId = RestAssured.given() 
     .body(
         JsonObject.mapFrom(
             ImmutableCreateWorkflow.builder()
@@ -128,7 +134,15 @@ public class ExtensionTests extends MongoDbConfig {
             .build()
             ).toString())
           .when().post("/zoe-ide-services/workflows")
-          .then().statusCode(200);
+          .then()
+            .extract()
+            .response()
+            .body()
+            .path("id");
+   
+   
+   /* --------------------------------------------*/
+   
     
     RestAssured.given()
     .body(
@@ -180,7 +194,34 @@ public class ExtensionTests extends MongoDbConfig {
           .when().put("/zoe-ide-services/links")
           .then().statusCode(200);
     
+    RestAssured.given()
+    .body(
+         JsonObject.mapFrom(
+            ImmutableLocaleMutator.builder()
+            .localeId(localeId)
+            .enabled(true)
+            .value("ralru")
+            .build()
+            ).toString())
+          .when().put("/zoe-ide-services/locales")
+          .then().statusCode(200);
+    
+    RestAssured.given()
+    .body(
+         JsonObject.mapFrom(
+            ImmutableWorkflowMutator.builder()
+            .workflowId(workflowId)
+            .content("updated workflow")
+            .name("SuperFlow")
+            .locale("et")
+            .build()
+            ).toString())
+          .when().put("/zoe-ide-services/workflows")
+          .then().statusCode(200);
+    
    
+    
+    
   }
   
 }
