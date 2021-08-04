@@ -25,9 +25,16 @@ import org.jboss.shrinkwrap.api.spec.JavaArchive;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
+import io.github.jocelynmutso.zoe.persistence.api.ImmutableArticleMutator;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateArticle;
+import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateLink;
+import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateLocale;
+import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreatePage;
+import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateRelease;
+import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateWorkflow;
 import io.quarkus.test.QuarkusUnitTest;
 import io.restassured.RestAssured;
+import io.restassured.path.json.JsonPath;
 import io.vertx.core.json.JsonObject;
 
 
@@ -51,11 +58,93 @@ public class ExtensionTests extends MongoDbConfig {
     .when().post("/zoe-ide-services")
     .then().statusCode(200);
     
-    RestAssured.given()
-      .body(JsonObject.mapFrom(ImmutableCreateArticle.builder()
-          .name("test-article")
-          .build()).toString())
+   String articleId = RestAssured.given()
+      .body(
+          JsonObject.mapFrom(
+            ImmutableCreateArticle.builder()
+            .name("test-article")
+            .build()
+          ).toString())
       .when().post("/zoe-ide-services/articles")
-      .then().statusCode(200);
+      .then()
+      .extract()
+        .response()
+        .body()
+        .path("id");
+  
+   
+    
+    RestAssured.given()
+      .body(
+          JsonObject.mapFrom(
+              ImmutableCreatePage.builder()
+              .locale("en")
+              .content("# Header 1")
+              .articleId("A1")
+              .build()
+              ).toString())
+            .when().post("/zoe-ide-services/pages")
+            .then().statusCode(200);
+    
+    RestAssured.given()
+    .body(
+        JsonObject.mapFrom(
+            ImmutableCreateLink.builder()
+            .locale("en")
+            .description("description")
+            .value("www.example.com")
+            .type("internal")
+            .build()
+            ).toString())
+          .when().post("/zoe-ide-services/links")
+          .then().statusCode(200);
+  
+    RestAssured.given()
+    .body( 
+        JsonObject.mapFrom(
+            ImmutableCreateLocale.builder()
+            .locale("en")
+            .build()
+            ).toString())
+          .when().post("/zoe-ide-services/locales")
+          .then().statusCode(200);
+    
+    RestAssured.given() 
+    .body(
+        JsonObject.mapFrom(
+            ImmutableCreateWorkflow.builder()
+            .locale("en")
+            .content("cool name")
+            .name("workflow name")
+            .build()
+            ).toString())
+          .when().post("/zoe-ide-services/workflows")
+          .then().statusCode(200);
+    
+    RestAssured.given()
+    .body(
+        JsonObject.mapFrom(
+            ImmutableCreateRelease.builder()
+            .name("v1.0")
+            .note("init release")
+            .build()
+            ).toString())
+          .when().post("/zoe-ide-services/releases")
+          .then().statusCode(200);
+    
+    RestAssured.given()
+    .body(
+        JsonObject.mapFrom(
+            ImmutableArticleMutator.builder()
+            .articleId(articleId)
+            .name("new name")
+            .order(300)
+            .build()
+            ).toString())
+          .when().put("/zoe-ide-services/articles/")
+          .then().statusCode(200);
+    
+    
   }
+  
 }

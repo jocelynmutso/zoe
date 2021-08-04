@@ -22,11 +22,21 @@ package io.github.jocelynmutso.zoe.quarkus.ide.services.handlers;
 
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableArticleMutator;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateArticle;
+import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateLink;
+import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateLocale;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreatePage;
+import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateRelease;
+import io.github.jocelynmutso.zoe.persistence.api.ImmutableCreateWorkflow;
+import io.github.jocelynmutso.zoe.persistence.api.ImmutableLinkMutator;
+import io.github.jocelynmutso.zoe.persistence.api.ImmutableLocaleMutator;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutablePageMutator;
+import io.github.jocelynmutso.zoe.persistence.api.ImmutableWorkflowMutator;
+import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Entity;
+import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.EntityBody;
 import io.github.jocelynmutso.zoe.quarkus.ide.services.IDEServicesContext;
 import io.quarkus.security.identity.CurrentIdentityAssociation;
 import io.quarkus.vertx.http.runtime.CurrentVertxRequest;
+import io.smallrye.mutiny.Uni;
 import io.vertx.core.http.HttpHeaders;
 import io.vertx.core.http.HttpMethod;
 import io.vertx.core.http.HttpServerResponse;
@@ -44,67 +54,153 @@ public class IDEServicesResourceHandler extends HdesResourceHandler {
   protected void handleResource(RoutingContext event, HttpServerResponse response, IDEServicesContext ctx) {
     response.headers().set(HttpHeaders.CONTENT_TYPE, "application/json; charset=UTF-8");
     final var path = event.normalisedPath();
-
+    final var client = ctx.getClient();
+    
     if(path.endsWith(ctx.getPaths().getServicePath())) {
       if (event.request().method() == HttpMethod.POST) {
-        ctx.getClient()
-        .create().repo()
+        client.create().repo()
         .onItem().transform(data -> JsonObject.mapFrom(data).toBuffer())
         .onFailure().invoke(e -> catch422(e, ctx, response))
         .subscribe().with(data -> response.end(data)); 
+      } else {
+        catch404("unsupported repository action", ctx, response);
       }
       
     } else if (path.startsWith(ctx.getPaths().getArticlesPath())) {
       
-      // articles
+      // ARTICLES
       
       if (event.request().method() == HttpMethod.POST) {
-        ctx.getClient()
-        .create().article(new JsonObject(event.getBody()).mapTo(ImmutableCreateArticle.class))
-        .onItem().transform(data -> JsonObject.mapFrom(data).toBuffer())
-        .onFailure().invoke(e -> catch422(e, ctx, response))
-        .subscribe().with(data -> response.end(data));
+        subscribe(
+            client.create().article(read(event, ImmutableCreateArticle.class)), 
+            response, ctx);
+        
       } else if(event.request().method() == HttpMethod.PUT) {
-        ctx.getClient()
-        .update().article(new JsonObject(event.getBody()).mapTo(ImmutableArticleMutator.class))
-        .onItem().transform(data -> JsonObject.mapFrom(data).toBuffer())
-        .onFailure().invoke(e -> catch422(e, ctx, response))
-        .subscribe().with(data -> response.end(data));
+        subscribe(
+            client.update().article(read(event, ImmutableArticleMutator.class)),
+            response, ctx);
       } else if(event.request().method() == HttpMethod.DELETE) {
-        ctx.getClient()
-        .delete().article(getId(path))
-        .onItem().transform(data -> JsonObject.mapFrom(data).toBuffer())
-        .onFailure().invoke(e -> catch422(e, ctx, response))
-        .subscribe().with(data -> response.end(data)); 
+        subscribe(
+            client.delete().article(getId(path)),
+            response, ctx);
+      } else {
+        catch404("unsupported article action", ctx, response);
+      }
+      
+      
+    } else if(path.startsWith(ctx.getPaths().getLinksPath())) {
+      
+      // LINKS
+      
+      if (event.request().method() == HttpMethod.POST) {
+        subscribe(
+            client.create().link(read(event, ImmutableCreateLink.class)), 
+            response, ctx);
+        
+      } else if(event.request().method() == HttpMethod.PUT) {
+        subscribe(
+            client.update().link(read(event, ImmutableLinkMutator.class)),
+            response, ctx);
+      } else if(event.request().method() == HttpMethod.DELETE) {
+        subscribe(
+            client.delete().link(getId(path)),
+            response, ctx);
+      } else {
+        catch404("unsupported links action", ctx, response);
       }
     
-
-    } else if(path.startsWith(ctx.getPaths().getPagesPath())) {
       
-      // pages
+    } else if(path.startsWith(ctx.getPaths().getLocalePath())) {
+      
+      // LOCALES
       
       if (event.request().method() == HttpMethod.POST) {
-        ctx.getClient()
-        .create().page(new JsonObject(event.getBody()).mapTo(ImmutableCreatePage.class))
-        .onItem().transform(data -> JsonObject.mapFrom(data).toBuffer())
-        .onFailure().invoke(e -> catch422(e, ctx, response))
-        .subscribe().with(data -> response.end(data));
+        subscribe(
+            client.create().locale(read(event, ImmutableCreateLocale.class)), 
+            response, ctx);
+        
       } else if(event.request().method() == HttpMethod.PUT) {
-        ctx.getClient()
-        .update().page(new JsonObject(event.getBody()).mapTo(ImmutablePageMutator.class))
-        .onItem().transform(data -> JsonObject.mapFrom(data).toBuffer())
-        .onFailure().invoke(e -> catch422(e, ctx, response))
-        .subscribe().with(data -> response.end(data));
+        subscribe(
+            client.update().locale(read(event, ImmutableLocaleMutator.class)),
+            response, ctx);
       } else if(event.request().method() == HttpMethod.DELETE) {
-        ctx.getClient()
-        .delete().page(getId(path))
-        .onItem().transform(data -> JsonObject.mapFrom(data).toBuffer())
-        .onFailure().invoke(e -> catch422(e, ctx, response))
-        .subscribe().with(data -> response.end(data)); 
-      } 
+        subscribe(
+            client.delete().locale(getId(path)),
+            response, ctx);
+      } else {
+        catch404("unsupported locale action", ctx, response);
+      }
+      
+      
+    } else if(path.startsWith(ctx.getPaths().getReleasesPath())) {
+
+      // RELEASES
+      
+      if (event.request().method() == HttpMethod.POST) {
+        subscribe(
+            client.create().release(read(event, ImmutableCreateRelease.class)), 
+            response, ctx);
+      } else {
+        catch404("unsupported release action", ctx, response);
+      }
+      
+    } else if(path.startsWith(ctx.getPaths().getWorkflowsPath())) {
+      
+      // WORKFLOWS
+      
+      if (event.request().method() == HttpMethod.POST) {
+        subscribe(
+            client.create().workflow(read(event, ImmutableCreateWorkflow.class)), 
+            response, ctx);
+        
+      } else if(event.request().method() == HttpMethod.PUT) {
+        subscribe(
+            client.update().workflow(read(event, ImmutableWorkflowMutator.class)),
+            response, ctx);
+      } else if(event.request().method() == HttpMethod.DELETE) {
+        subscribe(
+            client.delete().workflow(getId(path)),
+            response, ctx);
+      } else {
+        catch404("unsupported workflow action", ctx, response);
+      }
+      
+      
+    } else if(path.startsWith(ctx.getPaths().getPagesPath())) {
+      
+      // PAGES
+      
+      if (event.request().method() == HttpMethod.POST) {
+        subscribe(
+            client.create().page(read(event, ImmutableCreatePage.class)),
+            response, ctx);
+      } else if(event.request().method() == HttpMethod.PUT) {
+        subscribe(
+            client.update().page(read(event, ImmutablePageMutator.class)),
+            response, ctx);
+        
+      } else if(event.request().method() == HttpMethod.DELETE) {
+        subscribe(
+            client.delete().page(getId(path)),
+            response, ctx);
+ 
+      } else {
+        catch404("unsupported page action", ctx, response);
+      }
+    } else {
+      catch404("unsupported action", ctx, response);
     }
   }
+  
+  public <T> T read(RoutingContext event, Class<T> type) {
+    return new JsonObject(event.getBody()).mapTo(type);
+  }
 
+  public <T extends EntityBody> void subscribe(Uni<Entity<T>> uni, HttpServerResponse response, IDEServicesContext ctx) {
+    uni.onItem().transform(data -> JsonObject.mapFrom(data).toBuffer())
+    .onFailure().invoke(e -> catch422(e, ctx, response))
+    .subscribe().with(data -> response.end(data)); 
+  }
   
   private String getId(String path) {
     final var index = path.lastIndexOf("/");
