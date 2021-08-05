@@ -43,7 +43,7 @@
 		<jandex.version>1.0.8</jandex.version>
 		<quarkus.version>1.13.2.Final</quarkus.version>
 
-		<thena.version>999-SNAPSHOT</thena.version>
+		<thena.version>1.0.7</thena.version>
 		<eirslett.version>1.11.0</eirslett.version>
 		<yarnVersion>v1.22.5</yarnVersion>
 		<nodeVersion>v14.15.5</nodeVersion>
