@@ -85,9 +85,9 @@ public interface ZoePersistence {
   @JsonDeserialize(as = ImmutableLink.class)
   interface Link extends EntityBody {
     List<String> getArticles();
-    String getType();
     String getLocale();
     String getContent();
+    String getContentType();
     String getDescription();
   }
   

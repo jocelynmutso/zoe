@@ -177,7 +177,7 @@ public class CreateBuilderImpl implements CreateBuilder {
     final var link = ImmutableLink.builder()
       .description(init.getDescription())
       .locale(init.getLocale())
-      .type(init.getType())
+      .contentType(init.getType())
       .content(init.getValue())
       .build();
     

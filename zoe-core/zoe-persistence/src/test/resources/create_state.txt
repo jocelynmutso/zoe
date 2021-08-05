@@ -72,7 +72,7 @@ Trees
     96d307a75ba598c1eb5b03e1c294b129: LOCALE-5
     a439550e7e67c93da6af79bb8f797d5d: ARTICLE-2
     b4a4912a30e74dc557e2c2e780aaccfe: ARTICLE-1
-    70fd488af349e5be726751f944bd1d7f: LINK-8
+    1f32510942c14ea368606d776a179f74: LINK-8
   - id: 20
     0a3c1fc59c7d4d95b268ec12ff0de2cb: PAGE-6
     07ca1e517572283cd52297411e9e5554: RELEASE-4
@@ -82,7 +82,7 @@ Trees
     50557f6dd651714a907a826d793a7878: WORKFLOW-9
     a439550e7e67c93da6af79bb8f797d5d: ARTICLE-2
     b4a4912a30e74dc557e2c2e780aaccfe: ARTICLE-1
-    70fd488af349e5be726751f944bd1d7f: LINK-8
+    1f32510942c14ea368606d776a179f74: LINK-8
 
 Blobs
   - b4a4912a30e74dc557e2c2e780aaccfe: {"id":"ARTICLE-1","type":"ARTICLE","body":{"parentId":null,"name":"My first article","order":100}}
@@ -92,5 +92,5 @@ Blobs
   - 96d307a75ba598c1eb5b03e1c294b129: {"id":"LOCALE-5","type":"LOCALE","body":{"value":"en"}}
   - 0a3c1fc59c7d4d95b268ec12ff0de2cb: {"id":"PAGE-6","type":"PAGE","body":{"article":"A1","locale":"en","content":"# English content"}}
   - 2a9667c0888053b9b725a2a5086af524: {"id":"PAGE-7","type":"PAGE","body":{"article":"A1","locale":"fi","content":"# Finnish content"}}
-  - 70fd488af349e5be726751f944bd1d7f: {"id":"LINK-8","type":"LINK","body":{"articles":[],"type":"internal","locale":"en","content":"www.example.com","description":"click me"}}
+  - 1f32510942c14ea368606d776a179f74: {"id":"LINK-8","type":"LINK","body":{"articles":[],"locale":"en","content":"www.example.com","contentType":"internal","description":"click me"}}
   - 50557f6dd651714a907a826d793a7878: {"id":"WORKFLOW-9","type":"WORKFLOW","body":{"name":"Form1","locale":"en","content":"firstForm","articles":[]}}
