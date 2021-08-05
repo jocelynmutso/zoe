@@ -40,122 +40,122 @@ Commits
 
 Trees
   - id: 5
-    b4a4912a30e74dc557e2c2e780aaccfe: ARTICLE-1
+    31: ARTICLE-1
   - id: 7
-    a439550e7e67c93da6af79bb8f797d5d: ARTICLE-2
-    b4a4912a30e74dc557e2c2e780aaccfe: ARTICLE-1
+    32: ARTICLE-2
+    31: ARTICLE-1
   - id: 9
-    7e373d7a3b2e69ab1f28366f205951d9: RELEASE-3
-    a439550e7e67c93da6af79bb8f797d5d: ARTICLE-2
-    b4a4912a30e74dc557e2c2e780aaccfe: ARTICLE-1
+    33: RELEASE-3
+    32: ARTICLE-2
+    31: ARTICLE-1
   - id: 11
-    07ca1e517572283cd52297411e9e5554: RELEASE-4
-    7e373d7a3b2e69ab1f28366f205951d9: RELEASE-3
-    a439550e7e67c93da6af79bb8f797d5d: ARTICLE-2
-    b4a4912a30e74dc557e2c2e780aaccfe: ARTICLE-1
+    34: RELEASE-4
+    33: RELEASE-3
+    32: ARTICLE-2
+    31: ARTICLE-1
   - id: 13
-    07ca1e517572283cd52297411e9e5554: RELEASE-4
-    7e373d7a3b2e69ab1f28366f205951d9: RELEASE-3
-    96d307a75ba598c1eb5b03e1c294b129: LOCALE-5
-    a439550e7e67c93da6af79bb8f797d5d: ARTICLE-2
-    b4a4912a30e74dc557e2c2e780aaccfe: ARTICLE-1
+    34: RELEASE-4
+    33: RELEASE-3
+    35: LOCALE-5
+    32: ARTICLE-2
+    31: ARTICLE-1
   - id: 15
-    0a3c1fc59c7d4d95b268ec12ff0de2cb: PAGE-6
-    07ca1e517572283cd52297411e9e5554: RELEASE-4
-    7e373d7a3b2e69ab1f28366f205951d9: RELEASE-3
-    96d307a75ba598c1eb5b03e1c294b129: LOCALE-5
-    a439550e7e67c93da6af79bb8f797d5d: ARTICLE-2
-    b4a4912a30e74dc557e2c2e780aaccfe: ARTICLE-1
+    36: PAGE-6
+    34: RELEASE-4
+    33: RELEASE-3
+    35: LOCALE-5
+    32: ARTICLE-2
+    31: ARTICLE-1
   - id: 17
-    0a3c1fc59c7d4d95b268ec12ff0de2cb: PAGE-6
-    07ca1e517572283cd52297411e9e5554: RELEASE-4
-    2a9667c0888053b9b725a2a5086af524: PAGE-7
-    7e373d7a3b2e69ab1f28366f205951d9: RELEASE-3
-    96d307a75ba598c1eb5b03e1c294b129: LOCALE-5
-    a439550e7e67c93da6af79bb8f797d5d: ARTICLE-2
-    b4a4912a30e74dc557e2c2e780aaccfe: ARTICLE-1
+    36: PAGE-6
+    34: RELEASE-4
+    37: PAGE-7
+    33: RELEASE-3
+    35: LOCALE-5
+    32: ARTICLE-2
+    31: ARTICLE-1
   - id: 19
-    0a3c1fc59c7d4d95b268ec12ff0de2cb: PAGE-6
-    07ca1e517572283cd52297411e9e5554: RELEASE-4
-    2a9667c0888053b9b725a2a5086af524: PAGE-7
-    7e373d7a3b2e69ab1f28366f205951d9: RELEASE-3
-    96d307a75ba598c1eb5b03e1c294b129: LOCALE-5
-    a439550e7e67c93da6af79bb8f797d5d: ARTICLE-2
-    b4a4912a30e74dc557e2c2e780aaccfe: ARTICLE-1
-    1f32510942c14ea368606d776a179f74: LINK-8
+    36: PAGE-6
+    34: RELEASE-4
+    37: PAGE-7
+    33: RELEASE-3
+    35: LOCALE-5
+    32: ARTICLE-2
+    31: ARTICLE-1
+    38: LINK-8
   - id: 21
-    0a3c1fc59c7d4d95b268ec12ff0de2cb: PAGE-6
-    07ca1e517572283cd52297411e9e5554: RELEASE-4
-    2a9667c0888053b9b725a2a5086af524: PAGE-7
-    7e373d7a3b2e69ab1f28366f205951d9: RELEASE-3
-    96d307a75ba598c1eb5b03e1c294b129: LOCALE-5
-    50557f6dd651714a907a826d793a7878: WORKFLOW-9
-    a439550e7e67c93da6af79bb8f797d5d: ARTICLE-2
-    b4a4912a30e74dc557e2c2e780aaccfe: ARTICLE-1
-    1f32510942c14ea368606d776a179f74: LINK-8
+    36: PAGE-6
+    34: RELEASE-4
+    37: PAGE-7
+    33: RELEASE-3
+    35: LOCALE-5
+    39: WORKFLOW-9
+    32: ARTICLE-2
+    31: ARTICLE-1
+    38: LINK-8
   - id: 23
-    0a3c1fc59c7d4d95b268ec12ff0de2cb: PAGE-6
-    07ca1e517572283cd52297411e9e5554: RELEASE-4
-    2a9667c0888053b9b725a2a5086af524: PAGE-7
-    7e373d7a3b2e69ab1f28366f205951d9: RELEASE-3
-    96d307a75ba598c1eb5b03e1c294b129: LOCALE-5
-    50557f6dd651714a907a826d793a7878: WORKFLOW-9
-    a439550e7e67c93da6af79bb8f797d5d: ARTICLE-2
-    22283d47c63c5814c5cbb8d2956785b4: ARTICLE-1
-    1f32510942c14ea368606d776a179f74: LINK-8
+    36: PAGE-6
+    34: RELEASE-4
+    37: PAGE-7
+    33: RELEASE-3
+    35: LOCALE-5
+    39: WORKFLOW-9
+    32: ARTICLE-2
+    40: ARTICLE-1
+    38: LINK-8
   - id: 25
-    0a3c1fc59c7d4d95b268ec12ff0de2cb: PAGE-6
-    07ca1e517572283cd52297411e9e5554: RELEASE-4
-    2a9667c0888053b9b725a2a5086af524: PAGE-7
-    7e373d7a3b2e69ab1f28366f205951d9: RELEASE-3
-    84ee266f8c4d4d55c6994c8bd800432d: LOCALE-5
-    50557f6dd651714a907a826d793a7878: WORKFLOW-9
-    a439550e7e67c93da6af79bb8f797d5d: ARTICLE-2
-    22283d47c63c5814c5cbb8d2956785b4: ARTICLE-1
-    1f32510942c14ea368606d776a179f74: LINK-8
+    36: PAGE-6
+    34: RELEASE-4
+    37: PAGE-7
+    33: RELEASE-3
+    41: LOCALE-5
+    39: WORKFLOW-9
+    32: ARTICLE-2
+    40: ARTICLE-1
+    38: LINK-8
   - id: 27
-    27844a525ae33b0d51c9c8703fedc9b9: PAGE-6
-    07ca1e517572283cd52297411e9e5554: RELEASE-4
-    2a9667c0888053b9b725a2a5086af524: PAGE-7
-    7e373d7a3b2e69ab1f28366f205951d9: RELEASE-3
-    84ee266f8c4d4d55c6994c8bd800432d: LOCALE-5
-    50557f6dd651714a907a826d793a7878: WORKFLOW-9
-    a439550e7e67c93da6af79bb8f797d5d: ARTICLE-2
-    22283d47c63c5814c5cbb8d2956785b4: ARTICLE-1
-    1f32510942c14ea368606d776a179f74: LINK-8
+    42: PAGE-6
+    34: RELEASE-4
+    37: PAGE-7
+    33: RELEASE-3
+    41: LOCALE-5
+    39: WORKFLOW-9
+    32: ARTICLE-2
+    40: ARTICLE-1
+    38: LINK-8
   - id: 29
-    27844a525ae33b0d51c9c8703fedc9b9: PAGE-6
-    07ca1e517572283cd52297411e9e5554: RELEASE-4
-    2a9667c0888053b9b725a2a5086af524: PAGE-7
-    7e373d7a3b2e69ab1f28366f205951d9: RELEASE-3
-    84ee266f8c4d4d55c6994c8bd800432d: LOCALE-5
-    50557f6dd651714a907a826d793a7878: WORKFLOW-9
-    a439550e7e67c93da6af79bb8f797d5d: ARTICLE-2
-    22283d47c63c5814c5cbb8d2956785b4: ARTICLE-1
-    8cd9a92157c4cd50f7c4b4ba5a2d9983: LINK-8
+    42: PAGE-6
+    34: RELEASE-4
+    37: PAGE-7
+    33: RELEASE-3
+    41: LOCALE-5
+    39: WORKFLOW-9
+    32: ARTICLE-2
+    40: ARTICLE-1
+    43: LINK-8
   - id: 30
-    27844a525ae33b0d51c9c8703fedc9b9: PAGE-6
-    07ca1e517572283cd52297411e9e5554: RELEASE-4
-    2a9667c0888053b9b725a2a5086af524: PAGE-7
-    7e373d7a3b2e69ab1f28366f205951d9: RELEASE-3
-    84ee266f8c4d4d55c6994c8bd800432d: LOCALE-5
-    6536d52c85d6859a4e38dca42dcc042a: WORKFLOW-9
-    a439550e7e67c93da6af79bb8f797d5d: ARTICLE-2
-    22283d47c63c5814c5cbb8d2956785b4: ARTICLE-1
-    8cd9a92157c4cd50f7c4b4ba5a2d9983: LINK-8
+    42: PAGE-6
+    34: RELEASE-4
+    37: PAGE-7
+    33: RELEASE-3
+    41: LOCALE-5
+    44: WORKFLOW-9
+    32: ARTICLE-2
+    40: ARTICLE-1
+    43: LINK-8
 
 Blobs
-  - b4a4912a30e74dc557e2c2e780aaccfe: {"id":"ARTICLE-1","type":"ARTICLE","body":{"parentId":null,"name":"My first article","order":100}}
-  - a439550e7e67c93da6af79bb8f797d5d: {"id":"ARTICLE-2","type":"ARTICLE","body":{"parentId":null,"name":"My second article","order":100}}
-  - 7e373d7a3b2e69ab1f28366f205951d9: {"id":"RELEASE-3","type":"RELEASE","body":{"name":"v1.5","note":"test release"}}
-  - 07ca1e517572283cd52297411e9e5554: {"id":"RELEASE-4","type":"RELEASE","body":{"name":"v2.4","note":"new content"}}
-  - 96d307a75ba598c1eb5b03e1c294b129: {"id":"LOCALE-5","type":"LOCALE","body":{"value":"en"}}
-  - 0a3c1fc59c7d4d95b268ec12ff0de2cb: {"id":"PAGE-6","type":"PAGE","body":{"article":"A1","locale":"en","content":"# English content"}}
-  - 2a9667c0888053b9b725a2a5086af524: {"id":"PAGE-7","type":"PAGE","body":{"article":"A1","locale":"fi","content":"# Finnish content"}}
-  - 1f32510942c14ea368606d776a179f74: {"id":"LINK-8","type":"LINK","body":{"articles":[],"locale":"en","content":"www.example.com","contentType":"internal","description":"click me"}}
-  - 50557f6dd651714a907a826d793a7878: {"id":"WORKFLOW-9","type":"WORKFLOW","body":{"name":"Form1","locale":"en","content":"firstForm","articles":[]}}
-  - 22283d47c63c5814c5cbb8d2956785b4: {"id":"ARTICLE-1","type":"ARTICLE","body":{"parentId":null,"name":"Revised Article1","order":300}}
-  - 84ee266f8c4d4d55c6994c8bd800432d: {"id":"LOCALE-5","type":"LOCALE","body":{"value":"fi"}}
-  - 27844a525ae33b0d51c9c8703fedc9b9: {"id":"PAGE-6","type":"PAGE","body":{"article":"A1","locale":"fi","content":"new content for page1"}}
-  - 8cd9a92157c4cd50f7c4b4ba5a2d9983: {"id":"LINK-8","type":"LINK","body":{"articles":["A1"],"locale":"sv","content":"www.wikipedia.com","contentType":"external","description":"Don't click me"}}
-  - 6536d52c85d6859a4e38dca42dcc042a: {"id":"WORKFLOW-9","type":"WORKFLOW","body":{"name":"First form part 2","locale":"sv","content":"revision of firstForm","articles":[]}}
+  - 31: {"id":"ARTICLE-1","type":"ARTICLE","body":{"parentId":null,"name":"My first article","order":100}}
+  - 32: {"id":"ARTICLE-2","type":"ARTICLE","body":{"parentId":null,"name":"My second article","order":100}}
+  - 33: {"id":"RELEASE-3","type":"RELEASE","body":{"parentCommit":"6","name":"v1.5","note":"test release"}}
+  - 34: {"id":"RELEASE-4","type":"RELEASE","body":{"parentCommit":"8","name":"v2.4","note":"new content"}}
+  - 35: {"id":"LOCALE-5","type":"LOCALE","body":{"value":"en"}}
+  - 36: {"id":"PAGE-6","type":"PAGE","body":{"article":"A1","locale":"en","content":"# English content"}}
+  - 37: {"id":"PAGE-7","type":"PAGE","body":{"article":"A1","locale":"fi","content":"# Finnish content"}}
+  - 38: {"id":"LINK-8","type":"LINK","body":{"articles":[],"locale":"en","content":"www.example.com","contentType":"internal","description":"click me"}}
+  - 39: {"id":"WORKFLOW-9","type":"WORKFLOW","body":{"name":"Form1","locale":"en","content":"firstForm","articles":[]}}
+  - 40: {"id":"ARTICLE-1","type":"ARTICLE","body":{"parentId":null,"name":"Revised Article1","order":300}}
+  - 41: {"id":"LOCALE-5","type":"LOCALE","body":{"value":"fi"}}
+  - 42: {"id":"PAGE-6","type":"PAGE","body":{"article":"A1","locale":"fi","content":"new content for page1"}}
+  - 43: {"id":"LINK-8","type":"LINK","body":{"articles":["A1"],"locale":"sv","content":"www.wikipedia.com","contentType":"external","description":"Don't click me"}}
+  - 44: {"id":"WORKFLOW-9","type":"WORKFLOW","body":{"name":"First form part 2","locale":"sv","content":"revision of firstForm","articles":[]}}

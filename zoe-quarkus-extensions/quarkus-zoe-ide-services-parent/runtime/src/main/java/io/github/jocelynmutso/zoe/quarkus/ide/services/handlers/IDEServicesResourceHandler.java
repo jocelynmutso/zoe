@@ -73,7 +73,7 @@ public class IDEServicesResourceHandler extends HdesResourceHandler {
         
       } else if(event.request().method() == HttpMethod.GET) { 
         subscribe(
-            client.query().get(), 
+            client.query().head(), 
             response, ctx, objectMapper);
       } else {
         catch404("unsupported repository action", ctx, response);
@@ -169,6 +169,10 @@ public class IDEServicesResourceHandler extends HdesResourceHandler {
         subscribe(
             client.create().release(read(event, objectMapper, ImmutableCreateRelease.class)), 
             response, ctx, objectMapper);
+      } else if(event.request().method() == HttpMethod.GET) {
+        subscribe(
+            client.query().release(event.pathParam("id")), 
+            response, ctx, objectMapper);        
       } else {
         catch404("unsupported release action", ctx, response);
       }

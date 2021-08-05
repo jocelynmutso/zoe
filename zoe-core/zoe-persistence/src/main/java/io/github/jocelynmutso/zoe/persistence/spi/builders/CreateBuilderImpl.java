@@ -31,6 +31,7 @@ import io.github.jocelynmutso.zoe.persistence.api.ImmutablePage;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableRelease;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableSiteState;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableWorkflow;
+import io.github.jocelynmutso.zoe.persistence.api.RefException;
 import io.github.jocelynmutso.zoe.persistence.api.RepoException;
 import io.github.jocelynmutso.zoe.persistence.api.SaveException;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Article;
@@ -45,6 +46,7 @@ import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.SiteState;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Workflow;
 import io.github.jocelynmutso.zoe.persistence.spi.PersistenceConfig;
 import io.resys.thena.docdb.api.actions.CommitActions.CommitStatus;
+import io.resys.thena.docdb.api.actions.ObjectsActions.ObjectsStatus;
 import io.resys.thena.docdb.api.actions.RepoActions.RepoStatus;
 import io.smallrye.mutiny.Uni;
 
@@ -88,31 +90,40 @@ public class CreateBuilderImpl implements CreateBuilder {
 
   @Override
   public Uni<Entity<Release>> release(CreateRelease init) {
-    final var gid = gid(EntityType.RELEASE);
-    
-    final var release = ImmutableRelease.builder()
-        .name(init.getName())
-        .note(Optional.ofNullable(init.getNote()).orElse(""))
-        .build();
+    return config.getClient().objects().refState()
+      .repo(config.getRepoName())
+      .ref(config.getHeadName())
+      .build().onItem().transformToUni(state -> {
+        if(state.getStatus() == ObjectsStatus.OK) {
+          final var gid = gid(EntityType.RELEASE);
+          
+          final var release = ImmutableRelease.builder()
+              .name(init.getName())
+              .note(Optional.ofNullable(init.getNote()).orElse(""))
+              .parentCommit(state.getObjects().getRef().getCommit())
+              .build();
 
-    final Entity<Release> entity = ImmutableEntity.<Release>builder()
-        .id(gid)
-        .type(EntityType.RELEASE)
-        .body(release)
-        .build();
+          final Entity<Release> entity = ImmutableEntity.<Release>builder()
+              .id(gid)
+              .type(EntityType.RELEASE)
+              .body(release)
+              .build();
+          return config.getClient().commit().head()
+            .head(config.getRepoName(), config.getHeadName())
+            .message("creating-release")
+            .parentIsLatest()
+            .author(config.getAuthorProvider().getAuthor())
+            .append(gid, config.getSerializer().toString(entity))
+            .build().onItem().transform(commit -> {
+              if(commit.getStatus() == CommitStatus.OK) {
+                return entity;
+              }
+              throw new SaveException(entity, commit);
+            });      
+        }
         
-    return config.getClient().commit().head()
-        .head(config.getRepoName(), config.getHeadName())
-        .message("creating-release")
-        .parentIsLatest()
-        .author(config.getAuthorProvider().getAuthor())
-        .append(gid, config.getSerializer().toString(entity))
-        .build().onItem().transform(commit -> {
-          if(commit.getStatus() == CommitStatus.OK) {
-            return entity;
-          }
-          throw new SaveException(entity, commit);
-        });
+        throw new RefException("Can't create release because ref state query failed!", state);
+      });
   }
 
   @Override

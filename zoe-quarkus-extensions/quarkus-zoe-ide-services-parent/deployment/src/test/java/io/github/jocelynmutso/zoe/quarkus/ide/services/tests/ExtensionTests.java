@@ -149,7 +149,7 @@ public class ExtensionTests extends MongoDbConfig {
             .path("id");
    
 
-   RestAssured.given()
+   String releaseId = RestAssured.given()
    .body(
        JsonObject.mapFrom(
            ImmutableCreateRelease.builder()
@@ -158,7 +158,15 @@ public class ExtensionTests extends MongoDbConfig {
            .build()
            ).toString())
          .when().post("/zoe-ide-services/releases")
-         .then().statusCode(200);
+         .then().statusCode(200)
+         .extract()
+         .response()
+         .body()
+         .path("id");
+   
+   Response release = RestAssured.given().when().get("/zoe-ide-services/releases/"+releaseId);
+   release.prettyPrint();
+   release.then().statusCode(200);
    
    
    /* ----------------------   UPDATE TESTS  ----------------------*/
@@ -229,7 +237,7 @@ public class ExtensionTests extends MongoDbConfig {
     
 
     Response site = RestAssured.given().when().get("/zoe-ide-services");
-    System.out.println(site.prettyPrint());
+    site.prettyPrint();
     site.then().statusCode(200);
     
     // linkArticle

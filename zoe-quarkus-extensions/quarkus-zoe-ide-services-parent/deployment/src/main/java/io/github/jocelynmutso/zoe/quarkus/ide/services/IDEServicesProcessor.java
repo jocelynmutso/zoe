@@ -143,6 +143,12 @@ public class IDEServicesProcessor {
     addRoute.accept(buildItem.getLocalePath());
     addRoute.accept(buildItem.getReleasesPath());
     addRoute.accept(buildItem.getWorkflowsPath());
+
+    routes.produce(httpRoot.routeBuilder()
+        .routeFunction(buildItem.getReleasesPath() + "/:id", recorder.idRouteFunction(bodyHandler, HttpMethod.GET))
+        .handler(handler)
+        .displayOnNotFoundPage()
+        .build());
     
     routes.produce(httpRoot.routeBuilder()
         .routeFunction(buildItem.getLinksPath() + "/:id?:articleId", recorder.idRouteFunction(bodyHandler, HttpMethod.DELETE))

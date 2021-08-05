@@ -1,5 +1,7 @@
 package io.github.jocelynmutso.zoe.persistence.spi.builders;
 
+import java.util.Map;
+
 /*-
  * #%L
  * zoe-persistence
@@ -21,9 +23,11 @@ package io.github.jocelynmutso.zoe.persistence.spi.builders;
  */
 
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableSiteState;
+import io.github.jocelynmutso.zoe.persistence.api.QueryException;
 import io.github.jocelynmutso.zoe.persistence.api.RefException;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Article;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Entity;
+import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.EntityType;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Link;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Locale;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Page;
@@ -34,7 +38,10 @@ import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.SiteState;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Workflow;
 import io.github.jocelynmutso.zoe.persistence.spi.PersistenceCommands;
 import io.github.jocelynmutso.zoe.persistence.spi.PersistenceConfig;
+import io.github.jocelynmutso.zoe.persistence.spi.PersistenceConfig.EntityState;
 import io.resys.thena.docdb.api.actions.ObjectsActions.ObjectsStatus;
+import io.resys.thena.docdb.api.models.Objects.Blob;
+import io.resys.thena.docdb.api.models.Objects.Tree;
 import io.smallrye.mutiny.Uni;
 
 public class QueryBuilderImpl extends PersistenceCommands implements QueryBuilder {
@@ -43,9 +50,8 @@ public class QueryBuilderImpl extends PersistenceCommands implements QueryBuilde
     super(config);
   }
 
-  @SuppressWarnings("unchecked")
   @Override
-  public Uni<SiteState> get() {
+  public Uni<SiteState> head() {
     final var siteName = config.getRepoName() + ":" + config.getHeadName();
     
     return config.getClient().repo().query().id(config.getRepoName()).get().onItem()
@@ -67,6 +73,7 @@ public class QueryBuilderImpl extends PersistenceCommands implements QueryBuilde
               if(state.getStatus() == ObjectsStatus.ERROR) {
                 throw new RefException(siteName, state);
               }
+
               // Nothing present
               if(state.getObjects() == null) {
                 return ImmutableSiteState.builder()
@@ -75,38 +82,70 @@ public class QueryBuilderImpl extends PersistenceCommands implements QueryBuilde
                     .build();
               }
               
-              final var builder = ImmutableSiteState.builder();
               final var tree = state.getObjects().getTree();
-              for(final var treeValue : tree.getValues().values()) {
-                final var blob = state.getObjects().getBlobs().get(treeValue.getBlob());
-                final var entity = config.getDeserializer().fromString(blob.getValue());
-                final var id = entity.getId();
-                
-                switch (entity.getType()) {
-                case ARTICLE:
-                  builder.putArticles(id, (Entity<Article>) entity);
-                  break;
-                case LINK:
-                  builder.putLinks(id, (Entity<Link>) entity);
-                  break;
-                case LOCALE:
-                  builder.putLocales(id, (Entity<Locale>) entity);
-                  break;
-                case PAGE:
-                  builder.putPages(id, (Entity<Page>) entity);
-                  break;
-                case RELEASE:
-                  builder.putReleases(id, (Entity<Release>) entity);
-                  break;
-                case WORKFLOW:
-                  builder.putWorkflows(id, (Entity<Workflow>) entity);
-                  break;
-                default: throw new RuntimeException("Don't know how to convert entity: " + entity.toString() + "!");
-                }
-              }
-              
+              final var blobs = state.getObjects().getBlobs();
+              final var builder = mapTree(tree, blobs);
               return builder.name(siteName).contentType(SiteContentType.OK).build();
             });
       });
+  }
+  
+  @SuppressWarnings("unchecked")
+  private ImmutableSiteState.Builder mapTree(Tree tree, Map<String, Blob> blobs) {
+    final var builder = ImmutableSiteState.builder();
+    for(final var treeValue : tree.getValues().values()) {
+      final var blob = blobs.get(treeValue.getBlob());
+      final var entity = config.getDeserializer().fromString(blob.getValue());
+      final var id = entity.getId();
+      
+      switch (entity.getType()) {
+      case ARTICLE:
+        builder.putArticles(id, (Entity<Article>) entity);
+        break;
+      case LINK:
+        builder.putLinks(id, (Entity<Link>) entity);
+        break;
+      case LOCALE:
+        builder.putLocales(id, (Entity<Locale>) entity);
+        break;
+      case PAGE:
+        builder.putPages(id, (Entity<Page>) entity);
+        break;
+      case RELEASE:
+        builder.putReleases(id, (Entity<Release>) entity);
+        break;
+      case WORKFLOW:
+        builder.putWorkflows(id, (Entity<Workflow>) entity);
+        break;
+      default: throw new RuntimeException("Don't know how to convert entity: " + entity.toString() + "!");
+      }
+    }
+    return builder;
+  }
+
+  @Override
+  public Uni<SiteState> release(String releaseId) {
+    // Get the page
+    final Uni<EntityState<Release>> query = get(releaseId, EntityType.RELEASE);
+    
+    return query.onItem().transformToUni(this::getCommitState);
+  }
+  
+  private Uni<SiteState> getCommitState(EntityState<Release> release) {
+    return config.getClient().objects().commitState()
+    .repo(config.getRepoName())
+    .anyId(release.getEntity().getBody().getParentCommit())
+    .blobs(true)
+    .build().onItem()
+    .transform(state -> {
+      if(state.getStatus() == ObjectsStatus.ERROR) {
+        throw new QueryException("Can't find release commit: '" + release.getEntity().getBody().getParentCommit() + "'!", EntityType.RELEASE, state);
+      }
+      
+      final var tree = state.getObjects().getTree();
+      final var blobs = state.getObjects().getBlobs();
+      final var builder = mapTree(tree, blobs);
+      return builder.name(release.getEntity().getBody().getParentCommit()).contentType(SiteContentType.RELEASE).build();
+    });
   }
 }

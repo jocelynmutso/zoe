@@ -64,7 +64,6 @@ import io.resys.thena.docdb.spi.ClientState;
 import io.resys.thena.docdb.spi.DocDBCodecProvider;
 import io.resys.thena.docdb.spi.DocDBFactory;
 import io.resys.thena.docdb.spi.DocDBPrettyPrinter;
-import io.resys.thena.docdb.spi.DocDBTestPrinter;
 
 public abstract class MongoDbConfig {
   private static final MongodStarter starter = MongodStarter.getDefaultInstance();
@@ -153,7 +152,7 @@ public abstract class MongoDbConfig {
   public String toRepoExport(String repoId) {
     Repo repo = getClient().repo().query().id(repoId).get()
         .await().atMost(Duration.ofMinutes(1));
-    final String result = new DocDBTestPrinter(createState()).print(repo);
+    final String result = new TestExporter(createState()).print(repo);
     return result;
   }
 

@@ -42,7 +42,8 @@ public interface ZoePersistence {
   QueryBuilder query();
   
   interface QueryBuilder {
-    Uni<SiteState> get();
+    Uni<SiteState> head();
+    Uni<SiteState> release(String releaseId);
   }
 
   
@@ -61,7 +62,7 @@ public interface ZoePersistence {
   }
   
   enum SiteContentType {
-    OK, ERRORS, NOT_CREATED, EMPTY
+    OK, ERRORS, NOT_CREATED, EMPTY, RELEASE
   }
   
   @Value.Immutable
@@ -133,6 +134,7 @@ public interface ZoePersistence {
   @JsonSerialize(as = ImmutableRelease.class)
   @JsonDeserialize(as = ImmutableRelease.class)
   interface Release extends EntityBody {
+    String getParentCommit();
     String getName();
     String getNote();
   }
