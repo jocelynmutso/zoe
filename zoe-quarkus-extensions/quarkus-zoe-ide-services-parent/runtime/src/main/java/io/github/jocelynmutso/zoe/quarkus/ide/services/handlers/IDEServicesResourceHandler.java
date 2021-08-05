@@ -21,7 +21,10 @@ package io.github.jocelynmutso.zoe.quarkus.ide.services.handlers;
  */
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableArticleMutator;
@@ -37,6 +40,7 @@ import io.github.jocelynmutso.zoe.persistence.api.ImmutableLocaleMutator;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutablePageMutator;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableWorkflowArticlePage;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableWorkflowMutator;
+import io.github.jocelynmutso.zoe.persistence.api.UpdateBuilder.PageMutator;
 import io.github.jocelynmutso.zoe.quarkus.ide.services.IDEServicesContext;
 import io.quarkus.security.identity.CurrentIdentityAssociation;
 import io.quarkus.vertx.http.runtime.CurrentVertxRequest;
@@ -57,7 +61,7 @@ public class IDEServicesResourceHandler extends HdesResourceHandler {
   @Override
   protected void handleResource(RoutingContext event, HttpServerResponse response, IDEServicesContext ctx, ObjectMapper objectMapper) {
     response.headers().set(HttpHeaders.CONTENT_TYPE, "application/json; charset=UTF-8");
-    final var path = event.normalisedPath();
+    final var path = getPath(event);
     final var client = ctx.getClient();
     
     if(path.endsWith(ctx.getPaths().getServicePath())) {
@@ -217,9 +221,17 @@ public class IDEServicesResourceHandler extends HdesResourceHandler {
             client.create().page(read(event, objectMapper, ImmutableCreatePage.class)),
             response, ctx, objectMapper);
       } else if(event.request().method() == HttpMethod.PUT) {
-        subscribe(
-            client.update().page(read(event, objectMapper, ImmutablePageMutator.class)),
-            response, ctx, objectMapper);
+        
+        
+        try {
+          List<PageMutator> pages = objectMapper.readValue(event.getBody().getBytes(), new TypeReference<List<PageMutator>>(){});
+          
+          subscribe(
+              client.update().pages(pages),
+              response, ctx, objectMapper);
+        } catch(IOException e) {
+          throw new RuntimeException(e.getMessage(), e);
+        }
         
       } else if(event.request().method() == HttpMethod.DELETE) {
         subscribe(
@@ -234,11 +246,27 @@ public class IDEServicesResourceHandler extends HdesResourceHandler {
     }
   }
   
+  public String getPath(RoutingContext event) {
+    final var path = event.normalisedPath();
+    
+    return path.endsWith("/") ? path.substring(0, path.length() -1) : path;
+  }
+  
   public <T> T read(RoutingContext event, ObjectMapper objectMapper, Class<T> type) {
     
    // return new JsonObject(event.getBody()).mapTo(type);
     try {
       return objectMapper.readValue(event.getBody().getBytes(), type);
+    } catch(IOException e) {
+      throw new RuntimeException(e.getMessage(), e);
+    }
+  }
+  
+  public <T> List<T> readList(RoutingContext event, ObjectMapper objectMapper, Class<T> type) {
+    
+   // return new JsonObject(event.getBody()).mapTo(type);
+    try {
+      return objectMapper.readValue(event.getBody().getBytes(), new TypeReference<List<T>>(){});
     } catch(IOException e) {
       throw new RuntimeException(e.getMessage(), e);
     }

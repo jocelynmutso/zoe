@@ -1,5 +1,9 @@
 package io.github.jocelynmutso.zoe.persistence.api;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 /*-
  * #%L
  * zoe-persistence
@@ -21,36 +25,42 @@ package io.github.jocelynmutso.zoe.persistence.api;
  */
 
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Entity;
+import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.EntityBody;
 import io.resys.thena.docdb.api.actions.CommitActions.CommitResult;
 
 public class SaveException extends RuntimeException {
   private static final long serialVersionUID = 7190168525508589141L;
   
-  private final Entity<?> entity;
+  private final List<Entity<?>> entity = new ArrayList<>();
   private final CommitResult commit;
   
   public SaveException(Entity<?> entity, CommitResult commit) {
+    super(msg(Arrays.asList(entity), commit));
+    this.entity.add(entity);
+    this.commit = commit;
+  }
+  public SaveException(List<Entity<? extends EntityBody>> entity, CommitResult commit) {
     super(msg(entity, commit));
-    this.entity = entity;
+    this.entity.addAll(entity);
     this.commit = commit;
   }
   
-  public Entity<?> getEntity() {
+  public List<Entity<?>> getEntity() {
     return entity;
   }
   public CommitResult getCommit() {
     return commit;
   }
   
-  private static String msg(Entity<?> entity, CommitResult commit) {
+  private static String msg(List<Entity<?>> entity, CommitResult commit) {
     StringBuilder messages = new StringBuilder();
     for(var msg : commit.getMessages()) {
       messages
       .append(System.lineSeparator())
       .append("  - ").append(msg.getText());
     }
-    
-    return new StringBuilder("Can't save entity: ").append(entity.getType())
+    return new StringBuilder("Can't save entity: ")
+        .append(entity.get(0).getType())
         .append(", because of: ").append(messages)
         .toString();
   }

@@ -26,7 +26,7 @@ import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Entity;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.EntityBody;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.EntityType;
 import io.resys.thena.docdb.api.DocDB;
-import io.resys.thena.docdb.api.actions.ObjectsActions.BlobObjects;
+import io.resys.thena.docdb.api.actions.ObjectsActions.BlobObject;
 import io.resys.thena.docdb.api.actions.ObjectsActions.ObjectsResult;
 import io.smallrye.mutiny.Uni;
 
@@ -44,7 +44,7 @@ public interface PersistenceConfig {
   
   @Value.Immutable
   interface EntityState<T extends EntityBody> {
-    ObjectsResult<BlobObjects> getSrc();
+    ObjectsResult<BlobObject> getSrc();
     Entity<T> getEntity();
   }
   

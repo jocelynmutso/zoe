@@ -62,7 +62,7 @@ public class PersistenceCommands implements PersistenceConfig.Commands {
         .repo(config.getRepoName())
         .anyId(config.getHeadName())
         .blobName(blobId)
-        .build().onItem()
+        .get().onItem()
         .transform(state -> {
           if(state.getStatus() != ObjectsStatus.OK) {
             throw new QueryException(blobId, type, state);  

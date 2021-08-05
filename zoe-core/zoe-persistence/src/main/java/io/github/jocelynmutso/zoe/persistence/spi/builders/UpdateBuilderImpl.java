@@ -1,5 +1,11 @@
 package io.github.jocelynmutso.zoe.persistence.spi.builders;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
 /*-
  * #%L
  * zoe-persistence
@@ -26,6 +32,8 @@ import io.github.jocelynmutso.zoe.persistence.api.ImmutableLink;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableLocale;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutablePage;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableWorkflow;
+import io.github.jocelynmutso.zoe.persistence.api.QueryException;
+import io.github.jocelynmutso.zoe.persistence.api.SaveException;
 import io.github.jocelynmutso.zoe.persistence.api.UpdateBuilder;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Article;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Entity;
@@ -37,6 +45,8 @@ import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Workflow;
 import io.github.jocelynmutso.zoe.persistence.spi.PersistenceCommands;
 import io.github.jocelynmutso.zoe.persistence.spi.PersistenceConfig;
 import io.github.jocelynmutso.zoe.persistence.spi.PersistenceConfig.EntityState;
+import io.resys.thena.docdb.api.actions.CommitActions.CommitStatus;
+import io.resys.thena.docdb.api.actions.ObjectsActions.ObjectsStatus;
 import io.smallrye.mutiny.Uni;
 
 public class UpdateBuilderImpl extends PersistenceCommands implements UpdateBuilder {
@@ -92,6 +102,59 @@ public class UpdateBuilderImpl extends PersistenceCommands implements UpdateBuil
     
     // Change the page
     return query.onItem().transformToUni(state -> save(changePage(state, changes)));
+  }
+
+  @Override
+  public Uni<List<Entity<Page>>> pages(List<PageMutator> mutators) {
+    // Get the page
+    
+    final List<String> ids = new ArrayList<>();
+    final Map<String, PageMutator> changes = new HashMap<>();
+    for(var m : mutators) {
+      changes.put(m.getPageId(), m);
+      ids.add(m.getPageId());
+    }
+
+    return config.getClient()
+        .objects().blobState()
+        .repo(config.getRepoName())
+        .anyId(config.getHeadName())
+        .blobNames(ids)
+        .list().onItem()
+        .transformToUni(state -> {
+          if(state.getStatus() != ObjectsStatus.OK) {
+            throw new QueryException(String.join(",", ids), EntityType.PAGE, state);  
+          }
+          
+          final List<Entity<Page>> toBeSaved = state.getObjects().getBlob().stream()
+          .map(blob -> {
+            final Entity<Page> start = config.getDeserializer().fromString(EntityType.PAGE, blob.getValue());
+            final PageMutator mutator = changes.get(start.getId());
+            final Entity<Page> end = ImmutableEntity.<Page>builder()
+                .from(start)
+                .body(ImmutablePage.builder().from(start.getBody())
+                    .content(mutator.getContent())
+                    .locale(mutator.getLocale())
+                    .build())
+                .build();
+            return end;
+          }).collect(Collectors.toList());
+          
+          final var command = config.getClient().commit().head().head(config.getRepoName(), config.getHeadName());
+          toBeSaved.forEach(e -> command.append(e.getId(), config.getSerializer().toString(e)));
+
+          return command
+            .message("update type: '" + EntityType.PAGE + "', with ids: '" + String.join(",", ids) + "'")
+            .parentIsLatest()
+            .author(config.getAuthorProvider().getAuthor())
+            .build().onItem().transform(commit -> {
+              if(commit.getStatus() == CommitStatus.OK) {
+                return toBeSaved;
+              }
+              throw new SaveException(new ArrayList<>(toBeSaved), commit);
+              
+            });
+        });
   }
   
   private Entity<Page> changePage(EntityState<Page> state, PageMutator changes) {

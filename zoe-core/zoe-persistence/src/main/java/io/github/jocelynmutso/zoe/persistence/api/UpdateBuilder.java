@@ -42,6 +42,7 @@ public interface UpdateBuilder {
   Uni<Entity<Article>> article(ArticleMutator changes);
   Uni<Entity<Locale>> locale(LocaleMutator changes);
   Uni<Entity<Page>> page(PageMutator changes);
+  Uni<List<Entity<Page>>> pages(List<PageMutator> changes);
   Uni<Entity<Link>> link(LinkMutator changes);
   Uni<Entity<Workflow>> workflow(WorkflowMutator changes);
 

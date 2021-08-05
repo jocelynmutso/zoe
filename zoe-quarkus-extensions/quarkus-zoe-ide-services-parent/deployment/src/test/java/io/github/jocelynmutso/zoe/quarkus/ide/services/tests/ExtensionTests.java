@@ -1,5 +1,7 @@
 package io.github.jocelynmutso.zoe.quarkus.ide.services.tests;
 
+import java.util.Arrays;
+
 /*-
  * #%L
  * quarkus-zoe-ide-deployment
@@ -39,6 +41,7 @@ import io.github.jocelynmutso.zoe.persistence.api.ImmutableWorkflowMutator;
 import io.quarkus.test.QuarkusUnitTest;
 import io.restassured.RestAssured;
 import io.restassured.response.Response;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 
 
@@ -59,7 +62,7 @@ public class ExtensionTests extends MongoDbConfig {
   public void postArticles() {
 
     RestAssured.given()
-    .when().get("/zoe-ide-services")
+    .when().get("/zoe-ide-services/")
     .then().statusCode(200);
     
     RestAssured.given()
@@ -174,13 +177,11 @@ public class ExtensionTests extends MongoDbConfig {
     
     RestAssured.given()
     .body(
-         JsonObject.mapFrom(
-            ImmutablePageMutator.builder()
-            .pageId(pageId)
-            .content("# new content")
-            .locale("sv")
-            .build()
-            ).toString())
+         new JsonArray(Arrays.asList(ImmutablePageMutator.builder()
+             .pageId(pageId)
+             .content("# new content")
+             .locale("sv")
+             .build())).toString())
           .when().put("/zoe-ide-services/pages")
           .then().statusCode(200);
     

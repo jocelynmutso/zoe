@@ -53,7 +53,7 @@ public class QueryBuilderImpl extends PersistenceCommands implements QueryBuilde
         if(repo == null) {
          return Uni.createFrom().item(ImmutableSiteState.builder()
               .name(siteName)
-              .contentType(SiteContentType.NO_CREATED)
+              .contentType(SiteContentType.NOT_CREATED)
               .build()); 
         }
       
@@ -66,6 +66,13 @@ public class QueryBuilderImpl extends PersistenceCommands implements QueryBuilde
             .transform(state -> {
               if(state.getStatus() == ObjectsStatus.ERROR) {
                 throw new RefException(siteName, state);
+              }
+              // Nothing present
+              if(state.getObjects() == null) {
+                return ImmutableSiteState.builder()
+                    .name(siteName)
+                    .contentType(SiteContentType.EMPTY)
+                    .build();
               }
               
               final var builder = ImmutableSiteState.builder();

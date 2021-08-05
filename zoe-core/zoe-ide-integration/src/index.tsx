@@ -8,24 +8,19 @@ import { CMSEditor, API, messages } from 'zoe-ide';
 import { siteTheme } from './themes/siteTheme'
 
 const locale = "en";
-const service = API.mock();
-
-
 
 declare global {
   interface Window {
-    portalconfig?: {},
+    portalconfig?: { server: { url: string } },
   }
 }
 
 const { portalconfig } = window;
-const init = {
-};
 
 ReactDOM.render(
   <IntlProvider locale={locale} messages={messages[locale]}>
     <ThemeProvider theme={siteTheme}>
-      <CMSEditor service={service} />
+      <CMSEditor service={API.service({url: portalconfig?.server.url ? portalconfig.server.url : ""})} />
     </ThemeProvider>
   </IntlProvider>
   ,

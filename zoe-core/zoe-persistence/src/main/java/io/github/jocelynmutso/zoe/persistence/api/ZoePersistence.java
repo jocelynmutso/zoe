@@ -61,7 +61,7 @@ public interface ZoePersistence {
   }
   
   enum SiteContentType {
-    OK, ERRORS, NO_CREATED
+    OK, ERRORS, NOT_CREATED, EMPTY
   }
   
   @Value.Immutable
