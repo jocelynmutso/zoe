@@ -18,5 +18,6 @@ docker exec -it <CONTAINER_ID> bash
 # create db via shell
 mongosh
 use admin
+db.auth("root", "example")
 db.createUser( { user: "appUser", pwd: "123456", roles: [ { role: "readWrite", db: "test-assets" } ] } )
 

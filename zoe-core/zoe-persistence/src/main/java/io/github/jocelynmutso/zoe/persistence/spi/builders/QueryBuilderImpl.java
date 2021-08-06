@@ -23,8 +23,6 @@ import java.util.Map;
  */
 
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableSiteState;
-import io.github.jocelynmutso.zoe.persistence.api.QueryException;
-import io.github.jocelynmutso.zoe.persistence.api.RefException;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Article;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Entity;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.EntityType;
@@ -39,6 +37,8 @@ import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Workflow;
 import io.github.jocelynmutso.zoe.persistence.spi.PersistenceCommands;
 import io.github.jocelynmutso.zoe.persistence.spi.PersistenceConfig;
 import io.github.jocelynmutso.zoe.persistence.spi.PersistenceConfig.EntityState;
+import io.github.jocelynmutso.zoe.persistence.spi.exceptions.QueryException;
+import io.github.jocelynmutso.zoe.persistence.spi.exceptions.RefException;
 import io.resys.thena.docdb.api.actions.ObjectsActions.ObjectsStatus;
 import io.resys.thena.docdb.api.models.Objects.Blob;
 import io.resys.thena.docdb.api.models.Objects.Tree;
@@ -144,8 +144,8 @@ public class QueryBuilderImpl extends PersistenceCommands implements QueryBuilde
       
       final var tree = state.getObjects().getTree();
       final var blobs = state.getObjects().getBlobs();
-      final var builder = mapTree(tree, blobs);
-      return builder.name(release.getEntity().getBody().getParentCommit()).contentType(SiteContentType.RELEASE).build();
+      final var builder = mapTree(tree, blobs).putReleases(release.getEntity().getId(), release.getEntity());
+      return builder.name(config.getRepoName() + ":" + config.getHeadName() + ":" + release.getEntity().getBody().getName()).contentType(SiteContentType.RELEASE).build();
     });
   }
 }

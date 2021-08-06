@@ -1,5 +1,7 @@
 package io.github.jocelynmutso.zoe.persistence.api;
 
+import java.util.List;
+
 /*-
  * #%L
  * zoe-persistence
@@ -29,11 +31,11 @@ import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Article;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Entity;
-import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.SiteState;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Link;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Locale;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Page;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Release;
+import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.SiteState;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Workflow;
 import io.smallrye.mutiny.Uni;
 
@@ -92,6 +94,7 @@ public interface CreateBuilder {
     String getLocale();
     String getDescription(); 
     String getType();
+    List<String> getArticles();
   }
   
   @Value.Immutable

@@ -1,4 +1,8 @@
-package io.github.jocelynmutso.zoe.persistence.api;
+package io.github.jocelynmutso.zoe.persistence.spi.exceptions;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /*-
  * #%L
@@ -20,37 +24,43 @@ package io.github.jocelynmutso.zoe.persistence.api;
  * #L%
  */
 
-import io.resys.thena.docdb.api.actions.ObjectsActions.ObjectsResult;
-import io.resys.thena.docdb.api.actions.ObjectsActions.RefObjects;
+import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Entity;
+import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.EntityBody;
+import io.resys.thena.docdb.api.actions.CommitActions.CommitResult;
 
-public class RefException extends RuntimeException {
+public class SaveException extends RuntimeException {
   private static final long serialVersionUID = 7190168525508589141L;
   
-  private final String entity;
-  private final ObjectsResult<RefObjects> commit;
+  private final List<Entity<?>> entity = new ArrayList<>();
+  private final CommitResult commit;
   
-  public RefException(String entity, ObjectsResult<RefObjects> commit) {
+  public SaveException(Entity<?> entity, CommitResult commit) {
+    super(msg(Arrays.asList(entity), commit));
+    this.entity.add(entity);
+    this.commit = commit;
+  }
+  public SaveException(List<Entity<? extends EntityBody>> entity, CommitResult commit) {
     super(msg(entity, commit));
-    this.entity = entity;
+    this.entity.addAll(entity);
     this.commit = commit;
   }
   
-  public String getEntity() {
+  public List<Entity<?>> getEntity() {
     return entity;
   }
-  public ObjectsResult<RefObjects> getCommit() {
+  public CommitResult getCommit() {
     return commit;
   }
   
-  private static String msg(String entity, ObjectsResult<RefObjects> commit) {
+  private static String msg(List<Entity<?>> entity, CommitResult commit) {
     StringBuilder messages = new StringBuilder();
     for(var msg : commit.getMessages()) {
       messages
       .append(System.lineSeparator())
       .append("  - ").append(msg.getText());
     }
-    
-    return new StringBuilder("Error in repository: ").append(entity)
+    return new StringBuilder("Can't save entity: ")
+        .append(entity.get(0).getType())
         .append(", because of: ").append(messages)
         .toString();
   }

@@ -69,6 +69,22 @@ public class ExtensionTests extends MongoDbConfig {
     .when().post("/zoe-ide-services")
     .then().statusCode(200);
     
+    
+    String localeId = RestAssured.given()
+        .body( 
+            JsonObject.mapFrom(
+                ImmutableCreateLocale.builder()
+                .locale("en")
+                .build()
+                ).toString())
+              .when().post("/zoe-ide-services/locales")
+              .then().statusCode(200)
+                .extract()
+                .response()
+                .body()
+                .path("id");
+        
+    
    String articleId = RestAssured.given()
       .body(
           JsonObject.mapFrom(
@@ -89,9 +105,9 @@ public class ExtensionTests extends MongoDbConfig {
       .body(
           JsonObject.mapFrom(
               ImmutableCreatePage.builder()
-              .locale("en")
+              .locale(localeId)
               .content("# Header 1")
-              .articleId("A1")
+              .articleId(articleId)
               .build()
               ).toString())
             .when().post("/zoe-ide-services/pages")
@@ -105,10 +121,11 @@ public class ExtensionTests extends MongoDbConfig {
     .body(
         JsonObject.mapFrom(
             ImmutableCreateLink.builder()
-            .locale("en")
+            .locale(localeId)
             .description("description")
             .value("www.example.com")
             .type("internal")
+            .addArticles(articleId)
             .build()
             ).toString())
           .when().post("/zoe-ide-services/links")
@@ -118,25 +135,11 @@ public class ExtensionTests extends MongoDbConfig {
             .body()
             .path("id");
   
-   String localeId = RestAssured.given()
-    .body( 
-        JsonObject.mapFrom(
-            ImmutableCreateLocale.builder()
-            .locale("en")
-            .build()
-            ).toString())
-          .when().post("/zoe-ide-services/locales")
-          .then().statusCode(200)
-            .extract()
-            .response()
-            .body()
-            .path("id");
-    
    String workflowId = RestAssured.given() 
     .body(
         JsonObject.mapFrom(
             ImmutableCreateWorkflow.builder()
-            .locale("en")
+            .locale(localeId)
             .content("cool name")
             .name("workflow name")
             .build()
@@ -188,7 +191,7 @@ public class ExtensionTests extends MongoDbConfig {
          new JsonArray(Arrays.asList(ImmutablePageMutator.builder()
              .pageId(pageId)
              .content("# new content")
-             .locale("sv")
+             .locale(localeId)
              .build())).toString())
           .when().put("/zoe-ide-services/pages")
           .then().statusCode(200);
@@ -200,7 +203,7 @@ public class ExtensionTests extends MongoDbConfig {
             ImmutableLinkMutator.builder()
             .linkId(linkId)
             .content("# new content")
-            .locale("sv")
+            .locale(localeId)
             .description("stuff")
             .type("internal")
             .build()
@@ -251,16 +254,13 @@ public class ExtensionTests extends MongoDbConfig {
     
     /* ---------------------- DELETE TESTS  ----------------------*/
   
+    // page
+    RestAssured.given().delete("/zoe-ide-services/pages/" + pageId)
+    .then().statusCode(200);
     
     // article
   
     RestAssured.given().delete("/zoe-ide-services/articles/" + articleId)
-    .then().statusCode(200);
-    
-    
-    // page
-    
-    RestAssured.given().delete("/zoe-ide-services/pages/" + pageId)
     .then().statusCode(200);
     
     

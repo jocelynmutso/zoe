@@ -1,4 +1,4 @@
-package io.github.jocelynmutso.zoe.persistence.api;
+package io.github.jocelynmutso.zoe.persistence.spi.exceptions;
 
 /*-
  * #%L
@@ -22,6 +22,7 @@ package io.github.jocelynmutso.zoe.persistence.api;
 
 import java.util.List;
 
+import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Entity;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.EntityType;
 import io.resys.thena.docdb.api.actions.CommitActions.CommitResult;

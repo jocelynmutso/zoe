@@ -149,13 +149,13 @@ Blobs
   - 32: {"id":"ARTICLE-2","type":"ARTICLE","body":{"parentId":null,"name":"My second article","order":100}}
   - 33: {"id":"RELEASE-3","type":"RELEASE","body":{"parentCommit":"6","name":"v1.5","note":"test release"}}
   - 34: {"id":"RELEASE-4","type":"RELEASE","body":{"parentCommit":"8","name":"v2.4","note":"new content"}}
-  - 35: {"id":"LOCALE-5","type":"LOCALE","body":{"value":"en"}}
+  - 35: {"id":"LOCALE-5","type":"LOCALE","body":{"value":"en","enabled":true}}
   - 36: {"id":"PAGE-6","type":"PAGE","body":{"article":"A1","locale":"en","content":"# English content"}}
   - 37: {"id":"PAGE-7","type":"PAGE","body":{"article":"A1","locale":"fi","content":"# Finnish content"}}
   - 38: {"id":"LINK-8","type":"LINK","body":{"articles":[],"locale":"en","content":"www.example.com","contentType":"internal","description":"click me"}}
   - 39: {"id":"WORKFLOW-9","type":"WORKFLOW","body":{"name":"Form1","locale":"en","content":"firstForm","articles":[]}}
   - 40: {"id":"ARTICLE-1","type":"ARTICLE","body":{"parentId":null,"name":"Revised Article1","order":300}}
-  - 41: {"id":"LOCALE-5","type":"LOCALE","body":{"value":"fi"}}
+  - 41: {"id":"LOCALE-5","type":"LOCALE","body":{"value":"fi","enabled":true}}
   - 42: {"id":"PAGE-6","type":"PAGE","body":{"article":"A1","locale":"fi","content":"new content for page1"}}
   - 43: {"id":"LINK-8","type":"LINK","body":{"articles":["A1"],"locale":"sv","content":"www.wikipedia.com","contentType":"external","description":"Don't click me"}}
   - 44: {"id":"WORKFLOW-9","type":"WORKFLOW","body":{"name":"First form part 2","locale":"sv","content":"revision of firstForm","articles":[]}}

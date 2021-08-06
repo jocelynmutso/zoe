@@ -108,7 +108,7 @@ public interface ZoePersistence {
   @JsonDeserialize(as = ImmutableLocale.class)
   interface Locale extends EntityBody {
     String getValue();
-   // Boolean getEnabled();
+    Boolean getEnabled();
   }
   
   @Value.Immutable

@@ -31,9 +31,6 @@ import io.github.jocelynmutso.zoe.persistence.api.ImmutablePage;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableRelease;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableSiteState;
 import io.github.jocelynmutso.zoe.persistence.api.ImmutableWorkflow;
-import io.github.jocelynmutso.zoe.persistence.api.RefException;
-import io.github.jocelynmutso.zoe.persistence.api.RepoException;
-import io.github.jocelynmutso.zoe.persistence.api.SaveException;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Article;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Entity;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.EntityType;
@@ -45,6 +42,9 @@ import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.SiteContentType
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.SiteState;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Workflow;
 import io.github.jocelynmutso.zoe.persistence.spi.PersistenceConfig;
+import io.github.jocelynmutso.zoe.persistence.spi.exceptions.RefException;
+import io.github.jocelynmutso.zoe.persistence.spi.exceptions.RepoException;
+import io.github.jocelynmutso.zoe.persistence.spi.exceptions.SaveException;
 import io.resys.thena.docdb.api.actions.CommitActions.CommitStatus;
 import io.resys.thena.docdb.api.actions.ObjectsActions.ObjectsStatus;
 import io.resys.thena.docdb.api.actions.RepoActions.RepoStatus;
@@ -131,6 +131,7 @@ public class CreateBuilderImpl implements CreateBuilder {
     final var gid = gid(EntityType.LOCALE);
     final var locale = ImmutableLocale.builder()
         .value(init.getLocale())
+        .enabled(true)
         .build();
     
     final Entity<Locale> entity = ImmutableEntity.<Locale>builder()
@@ -190,6 +191,7 @@ public class CreateBuilderImpl implements CreateBuilder {
       .locale(init.getLocale())
       .contentType(init.getType())
       .content(init.getValue())
+      .articles(init.getArticles())
       .build();
     
     final Entity<Link> entity = ImmutableEntity.<Link>builder()

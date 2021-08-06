@@ -16,6 +16,8 @@
     <module>zoe-ide-integration</module>
     <module>zoe-ide-services</module>
     <module>zoe-persistence</module>
+    <module>zoe-persistence-api</module>
+    <module>zoe-static-content</module>
   </modules>
 
 </project>

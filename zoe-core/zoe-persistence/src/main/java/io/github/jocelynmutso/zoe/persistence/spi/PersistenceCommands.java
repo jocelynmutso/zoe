@@ -20,13 +20,13 @@ package io.github.jocelynmutso.zoe.persistence.spi;
  * #L%
  */
 
-import io.github.jocelynmutso.zoe.persistence.api.DeleteException;
-import io.github.jocelynmutso.zoe.persistence.api.QueryException;
-import io.github.jocelynmutso.zoe.persistence.api.SaveException;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.Entity;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.EntityBody;
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.EntityType;
 import io.github.jocelynmutso.zoe.persistence.spi.PersistenceConfig.EntityState;
+import io.github.jocelynmutso.zoe.persistence.spi.exceptions.DeleteException;
+import io.github.jocelynmutso.zoe.persistence.spi.exceptions.QueryException;
+import io.github.jocelynmutso.zoe.persistence.spi.exceptions.SaveException;
 import io.resys.thena.docdb.api.actions.CommitActions.CommitStatus;
 import io.resys.thena.docdb.api.actions.ObjectsActions.ObjectsStatus;
 import io.smallrye.mutiny.Uni;

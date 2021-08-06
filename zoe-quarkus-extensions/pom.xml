@@ -15,6 +15,7 @@
   <modules>
     <module>quarkus-zoe-ide-parent</module>
     <module>quarkus-zoe-ide-services-parent</module>
+    <module>quarkus-zoe-sc-parent</module>
   </modules>
 
 </project>
