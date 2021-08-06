@@ -4,7 +4,7 @@
   <parent>
     <groupId>io.github.jocelynmutso</groupId>
     <artifactId>quarkus-zoe-ide-parent</artifactId>
-    <version>1.0.7</version>
+    <version>999-SNAPSHOT</version>
   </parent>
   <modelVersion>4.0.0</modelVersion>
   <artifactId>quarkus-zoe-ide</artifactId>
