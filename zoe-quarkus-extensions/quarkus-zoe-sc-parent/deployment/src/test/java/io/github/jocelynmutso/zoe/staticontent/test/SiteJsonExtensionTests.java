@@ -36,7 +36,7 @@ import io.restassured.RestAssured;
 
 
 //-Djava.util.logging.manager=org.jboss.logmanager.LogManager
-public class ExtensionTests {
+public class SiteJsonExtensionTests {
   @RegisterExtension
   final static QuarkusUnitTest config = new QuarkusUnitTest()
     .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
@@ -52,13 +52,11 @@ public class ExtensionTests {
     final var defaultLocale = RestAssured.when().get("/portal/site");
     defaultLocale.prettyPrint();
     defaultLocale.then().statusCode(200);
-//    RestAssured.when().get("/portal-app").then().statusCode(200);
-//    RestAssured.when().get("/portal-app/?test").then().statusCode(200);
   }
   
   public static String getSite() {
     try {
-      return IOUtils.toString(ExtensionTests.class.getClassLoader().getResource("site.json"), StandardCharsets.UTF_8);
+      return IOUtils.toString(SiteJsonExtensionTests.class.getClassLoader().getResource("site.json"), StandardCharsets.UTF_8);
     } catch (IOException e) {
       throw new RuntimeException(e.getMessage(), e);
     }

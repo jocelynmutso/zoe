@@ -1,6 +1,7 @@
 package io.github.jocelynmutso.zoe.staticontent.spi;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 /*-
  * #%L
@@ -32,7 +33,10 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 
 import io.github.jocelynmutso.zoe.persistence.api.ZoePersistence.SiteState;
 import io.github.jocelynmutso.zoe.staticontent.api.ImmutableImageData;
+import io.github.jocelynmutso.zoe.staticontent.api.ImmutableImageResource;
 import io.github.jocelynmutso.zoe.staticontent.api.ImmutableLinkData;
+import io.github.jocelynmutso.zoe.staticontent.api.ImmutableMarkdown;
+import io.github.jocelynmutso.zoe.staticontent.api.ImmutableMarkdownContent;
 import io.github.jocelynmutso.zoe.staticontent.api.ImmutableTopicData;
 import io.github.jocelynmutso.zoe.staticontent.api.ImmutableTopicNameData;
 import io.github.jocelynmutso.zoe.staticontent.api.MarkdownContent;
@@ -40,6 +44,9 @@ import io.github.jocelynmutso.zoe.staticontent.api.SiteContent;
 import io.github.jocelynmutso.zoe.staticontent.api.StaticContentClient;
 import io.github.jocelynmutso.zoe.staticontent.spi.beans.MutableStaticContent;
 import io.github.jocelynmutso.zoe.staticontent.spi.support.ParserAssert;
+import io.github.jocelynmutso.zoe.staticontent.spi.visitor.CSVLinksVisitor;
+import io.github.jocelynmutso.zoe.staticontent.spi.visitor.MarkdownException;
+import io.github.jocelynmutso.zoe.staticontent.spi.visitor.MarkdownVisitor;
 import io.github.jocelynmutso.zoe.staticontent.spi.visitor.SiteStateVisitor;
 import io.github.jocelynmutso.zoe.staticontent.spi.visitor.SiteVisitor;
 import io.github.jocelynmutso.zoe.staticontent.spi.visitor.SiteVisitorDefault;
@@ -56,6 +63,7 @@ public class StaticContentClientDefault implements StaticContentClient {
   
   @Override
   public StaticContentBuilder create() {
+    
     return new StaticContentBuilder() {
       private final SiteVisitor visitor = new SiteVisitorDefault((src) -> {
         try {
@@ -66,6 +74,7 @@ public class StaticContentClientDefault implements StaticContentClient {
       });
       private String imageUrl;
       private Long created;
+      
       @Override
       public StaticContentBuilder topic(
           Function<ImmutableTopicData.Builder, TopicData> newTopic) {
@@ -100,17 +109,19 @@ public class StaticContentClientDefault implements StaticContentClient {
         this.created = created;
         return this;
       }
+      
       @Override
       public SiteContent build() {
         ParserAssert.notEmpty(imageUrl, () -> "imageUrl can't be empty!");
         ParserAssert.notNull(created, () -> "created can't be empty!");
+      
         final var visited = visitor.visit(imageUrl);
-        
         final var content = visited.getSites().stream().collect(
             Collectors.toMap(e -> e.getLocale(), e -> e)
         );
         return new MutableStaticContent(created, content);
       }
+      
     };
   }
 
@@ -171,5 +182,68 @@ public class StaticContentClientDefault implements StaticContentClient {
   public MarkdownContent parseMd(SiteState site) {
     final var content = new SiteStateVisitor().visit(site);
     return content;
+  }
+
+  @Override
+  public FileParser parseFiles() {
+    return new FileParser() {
+      private final ImmutableMarkdownContent.Builder result = ImmutableMarkdownContent.builder();
+      @Override
+      public FileParser add(String path, byte[] value) {
+        if (!path.toLowerCase().endsWith(".md")) {
+          final var cleanName = path.toLowerCase();
+          if(cleanName.equals("links.csv")) {
+            result.addAllLinks(new CSVLinksVisitor(path).visit(value));
+          } else if(cleanName.startsWith("images/")) {
+            result.addImages(ImmutableImageResource.builder().path(path).value(value).build());
+          }
+          return this;
+        }
+
+        final var fragments = path.split("\\/");
+        if (!(fragments.length == 2 || fragments.length == 3)) {
+          throw new MarkdownException("Markdown: '" + path + "' must have [2..3] (level2/level2/en.md) levels but was: '"
+              + fragments.length + "'!");
+        }
+        final var fileName = fragments[fragments.length - 1];
+        if (fileName.length() != 5) {
+          throw new MarkdownException(
+              "Markdown: '" + path + "' must be name as <path>/<locale>.md but was: '" + path + "'!");
+        }
+        final var locale = fileName.substring(0, 2);
+        
+        try {
+          final var content = new String(value, StandardCharsets.UTF_8);
+          final String cleanPath;
+          if (fragments.length == 2) {
+            cleanPath = fragments[0];
+          } else {
+            cleanPath = fragments[0] + "/" + fragments[1];
+          }
+
+          final var ast = new MarkdownVisitor().visit(content);
+          if(ast.getHeadings().stream().filter(entity -> entity.getLevel() == 1).findFirst().isEmpty()) {
+            throw new MarkdownException("markdown must have atleast one h1(line starting with one # my super menu)");
+          }
+          
+          result.addValues(ImmutableMarkdown.builder()
+              .path(cleanPath)
+              .locale(locale)
+              .value(content)
+              .addAllHeadings(ast.getHeadings())
+              .addAllImages(ast.getImages())
+              .build());
+          
+          return this;
+        } catch (Exception e) {
+          throw new MarkdownException("Failed to parse markdown: '" + path + "', error: " + e.getMessage(), e);
+        }
+      }
+
+      @Override
+      public MarkdownContent build() {
+        return result.build();
+      }
+    };
   }
 }

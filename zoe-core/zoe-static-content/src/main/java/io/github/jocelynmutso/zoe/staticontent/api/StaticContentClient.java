@@ -34,9 +34,16 @@ public interface StaticContentClient {
   StaticContentBuilder create();
   StaticContentBuilder from(SiteState site);
   StaticContentBuilder from(MarkdownContent site);
+  
+  
   SiteState parseSiteState(String json);
   MarkdownContent parseMd(SiteState site);
+  FileParser parseFiles();
   
+  interface FileParser {
+    FileParser add(String path, byte[] value);
+    MarkdownContent build();
+  }
   
   interface StaticContentBuilder {
     StaticContentBuilder topic(Function<ImmutableTopicData.Builder, TopicData> newTopic);

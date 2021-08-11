@@ -21,6 +21,7 @@ package io.github.jocelynmutso.zoe.staticontent;
  */
 
 import java.nio.file.Path;
+import java.util.Optional;
 
 import io.quarkus.runtime.annotations.ConfigItem;
 import io.quarkus.runtime.annotations.ConfigRoot;
@@ -50,5 +51,13 @@ public class StaticContentConfig {
    * Artifact from where to search
    */
   @ConfigItem
-  Path siteJson;
+  Optional<Path> siteJson;
+  
+  /**
+   * Artifact from where to search
+   * groupId:artifactId
+   * io.resys.client.portal:static-content
+   */
+  @ConfigItem
+  Optional<String> webjar;
 }
