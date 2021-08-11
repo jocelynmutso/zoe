@@ -91,6 +91,7 @@ public class UpdateBuilderImpl extends PersistenceCommands implements UpdateBuil
         .from(start)
         .body(ImmutableLocale.builder().from(start.getBody())
             .value(changes.getValue())
+            .enabled(changes.getEnabled())
             .build())
         .build();
   }
