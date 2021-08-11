@@ -1,15 +1,10 @@
 package io.github.jocelynmutso.zoe.staticontent.test;
 
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-
-import org.apache.commons.io.IOUtils;
-
 /*-
  * #%L
- * hdes-ui-quarkus-deployment
+ * quarkus-zoe-sc-deployment
  * %%
- * Copyright (C) 2020 Copyright 2020 ReSys OÜ
+ * Copyright (C) 2021 Copyright 2021 ReSys OÜ
  * %%
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,15 +29,14 @@ import org.junit.jupiter.api.extension.RegisterExtension;
 import io.quarkus.test.QuarkusUnitTest;
 import io.restassured.RestAssured;
 
-
 //-Djava.util.logging.manager=org.jboss.logmanager.LogManager
-public class ExtensionTests {
+public class WebJarExtensionTests {
+
   @RegisterExtension
   final static QuarkusUnitTest config = new QuarkusUnitTest()
     .setArchiveProducer(() -> ShrinkWrap.create(JavaArchive.class)
-      .addAsResource(new StringAsset(getSite()), "site.json")
       .addAsResource(new StringAsset(
-          "quarkus.zoe-sc.site-json=site.json\r\n" +
+          "quarkus.zoe-sc.webjar=io.github.jocelynmutso:quarkus-zoe-sc-testcontent\r\n" +
           "quarkus.zoe-sc.service-path=portal/site\r\n" +
           ""), "application.properties")
     );
@@ -52,15 +46,5 @@ public class ExtensionTests {
     final var defaultLocale = RestAssured.when().get("/portal/site");
     defaultLocale.prettyPrint();
     defaultLocale.then().statusCode(200);
-//    RestAssured.when().get("/portal-app").then().statusCode(200);
-//    RestAssured.when().get("/portal-app/?test").then().statusCode(200);
-  }
-  
-  public static String getSite() {
-    try {
-      return IOUtils.toString(ExtensionTests.class.getClassLoader().getResource("site.json"), StandardCharsets.UTF_8);
-    } catch (IOException e) {
-      throw new RuntimeException(e.getMessage(), e);
-    }
   }
 }
